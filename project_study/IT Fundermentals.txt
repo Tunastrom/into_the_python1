@@ -1,0 +1,10 @@
+#2021.2.22 _ IT Fundermentals 
+
+
+1. 시간복잡도
+
+2. 내부단편화 (internal fragmentation)
+
+3. 
+
+
