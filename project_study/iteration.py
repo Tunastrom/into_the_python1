@@ -10,7 +10,7 @@ for i in mylist1:
 
 # generators
 # : iterator의 일종, 모든 값을 메모리에 담지 않고 그때그때 값을 생성(generation) 해서 반환하는 차이
-#   -> 한 번에 한개의 값만 순환(iterate)
+#   : 한 번에 한개의 값만 순환(iterate)
 #   -> 리소스에 대한 제어가 필요할때 매우 유용
 
 mygenerator1 = (x * x for x in range(3)) 
@@ -51,9 +51,27 @@ hsbc.crisis = True
 wall_street_atm = hsbc.create_atm()
 # print(wall_street_atm.__next__())
 hsbc.crisis = False
-print(corner_street_atm.__next__())
+# print(corner_street_atm.__next__())
 brand_new_atm = hsbc.create_atm()
-for cash in brand_new_atm:
-    print(cash)
+# for cash in brand_new_atm:
+#     print(cash)
+
+#iteration의 내부 매커니즘
+
+#itereables;__iter()__ : 이터레이터 객체를 가져올 수 있는 모든 객체
+#iterrators;__next()__ : 이터러블 객체를 순환할 수 있게 해주는 객체
+
+#iterator & generator 모두 한 번에 한 번만 순환
+
+a = [1,2,3,4,5]
+print(iter(a))
+b = iter(a)
+print(next(b))
+print(next(b))
+print(next(b))
+print(next(b))
+print(next(b))
+print(next(b))
+
 
 
