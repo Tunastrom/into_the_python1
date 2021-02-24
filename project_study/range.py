@@ -20,7 +20,18 @@
 # iterable <- iterator or other object support iteration
 
 
+seasons = ['spring', 'summer', 'fall', 'winter']
+print(list(enumerate(seasons)))
+print(list(enumerate(seasons, start=1)))
 
 
+def enumerate1(sequence, start=0):
+    n = start
+    for elem in sequence:
+        yield n, elem
+        n += 1
 
+for x in enumerate1(seasons):
+    print(x)
 
+print(list(range(10)))
