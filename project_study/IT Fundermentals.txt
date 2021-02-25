@@ -1,7 +1,9 @@
 #2021.2.22 _ IT Fundermentals 
 
 
-1. 시간복잡도
+1. Complexity
+   1) Time Complexity: how many time are needed to complete the job. 
+   2) Space Complexity how many resources are needed to complete the job.
 
 2. 내부단편화 (internal fragmentation)
 
