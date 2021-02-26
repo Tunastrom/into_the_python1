@@ -1,10 +1,32 @@
 #2021.2.22 _ Fundermentals 
 
 
-1. 시간복잡도
+1. 복잡도
+   1) 시간복잡도: 작업을 끝내는 데 걸리는 시간
+   2) 공간복잡도: 작업을 진행하는 동안 차지하는 메모리공간의 양
+   * 일반적으로 1), 2)는 서로 반비례한다.
+     다만 시간복잡도가 충족되면 공간복잡도는 대체로 감수하는 편
 
 2. 내부단편화 (internal fragmentation)
 
 3. local symbol table
 
+4. procedure
+   : a set of coded instructions that tell a computer how to run a program or calculation.
+    when computer is completed to running this. 
+    this will not return a value, it's a different from function that have to return a value.  
+    this may also be called a subroutine, subprogram or function.
 
+5. Von neumann's <stored program computer>
+   -Computer type that store programm data with command data into same memory
+    
+
+6. 명령어 집합(instruction set) or 명령어 집합구조(instruction set architecture)
+   : These are Machine Language that can be understanded and executed, by microprocessor recognizing them. 
+     It is lowest level of programming language.
+     It contain all commands which can excuted by processor.
+     = data type, command, register, adressing mode, momory structure, interupt, Exception Handling,
+       external input/output etc..
+
+    * opcode(operation code, instruction syllable, instruction parcel, obstring)
+      
