@@ -74,5 +74,49 @@ def add_and_mul(a,b):
 result = add_and_mul(3,4)
 print(result)
 
-def say_myself(name, old, man=True):
-    print("")
+def say_myself(name, old, man=True): #초기화할 변수는 항상 맨 뒤에
+    print("나의 이름은 %s 입니다." % name)
+    print("나이는 %d살입니다." % old)
+    if man:
+        print("남자입니다.")
+    else:   
+        print("여자입니다.")
+
+
+say_myself("유철원", 29)
+say_myself("강혜원", 23, False)
+
+a = 1
+def vartest(a):
+    a = a + 1
+
+vartest(a)
+print(a)
+
+vartest(3)
+print(a)
+
+
+
+def vartest_global():
+    global a
+    a = a + 1
+
+vartest_global()
+print(a)  
+
+add = lambda a, b: a+b
+     # lambda 매개변수1,매개변수2...: 매개변수 이용한 표현식 
+     # return 없이도 결과값 돌려줌
+result = add(3,4)
+
+
+
+def add(a,b):
+    return a+b
+result = add(3,4)
+print(result)
+
+
+
+
