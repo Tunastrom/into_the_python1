@@ -6,5 +6,4 @@ def average (*args):
         for i in args:
             all_sum += i
 
-    
-        
+

@@ -1,0 +1,20 @@
+0. Definition of programming language
+   1) 계산(computation)
+      (1) Turing machine: 수학적 개념으로 형식적인 정의
+      (2) 컴퓨터가 수행가능한 모든 작업
+   2) Machine-readable
+      (1) Machine independent
+      (2) 모호하지 않고, 유연한 단계적 처리로 번역가능한 알고리즘 존재해야 함.
+   3) Human-readable
+      : 컴퓨터 행위를 읽기 쉽도록 "추상화"시키는 방법 제공 
+   
+
+1. 추상화(abstraction)
+   1) 데이터 추상화
+      (1) 기본적 추상화 (basic abstraction)
+          : 메모리에 저장되는 데이터 타입 제약
+            char, int, float, double, Boolean, string, pointer 
+      (2) 구조적 추상화 (structured abstraction)
+          : 메모리 블록에 명칭 부여 -> 변수, 배열, 구조체
+            type arr = array[1..10] of real;
+      (3) 단위 추상화 (unit abstraction)
