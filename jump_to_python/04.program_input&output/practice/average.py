@@ -6,3 +6,4 @@ def average_all(*numbers):
     return average
 
 print(average_all(1,2,3,4,5,6,7,8,9,10))
+

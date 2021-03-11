@@ -1,0 +1,1 @@
+print(int(hex(234),0))
