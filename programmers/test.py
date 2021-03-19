@@ -7,6 +7,7 @@ for i in range(len(f_numbers)):
     arr = []
     for x in numbers:
         print('x: '+str(x))
+        if str(x)[0] == f_numbers[i]:
             arr.append(str(x))
             print('arr: ', arr)
     new_numbers.append(arr)
