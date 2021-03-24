@@ -3,8 +3,8 @@ import re, math
 # with open('C:/Users/Administrator/Desktop/LCN_NBUActivity_202102.txt', 'r') as f: 
 #     text = f.read()
 text = 'incre'
-pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
-pattern = '[\d]+'
+# pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
+pattern = '[\d]+[inc]'
 r = re.compile(pattern)
 print(dir(r))
 search_result = r.search(text).group()
