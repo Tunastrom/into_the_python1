@@ -1,6 +1,6 @@
 import re 
 
-# 전체 내용에서 띄어쓰기 제거 및 값 없는 컬럼 삭제 
+# 전체 내용에서 단어 사이의 띄어쓰기 제거 및 값 없는 컬럼의 이름 삭제 
 Contents_str =''
 with open('C:/Users/Administrator/Desktop/test_log/Export1_ext.txt', 'r') as f:
     Contents_str = f.read()
@@ -20,11 +20,11 @@ with open('C:/Users/Administrator/Desktop/test_log/Export1_ext.txt', 'r') as f:
         'Job Id','Job Policy','Job Schedule','Start Time','Elapsed Time','End Time','Media Server','Storage Unit','Off-Host Type',
         'Image Cleanup', 'Catalog Backup', '% Complete (Estimated)','Job PID', 'Parent Job ID', 'Active Start', 'Active Elapsed', 'Deduplication Rate'
     }
-    
     delete_set={ 
         'Operation', 'State Details', 'copy', 'Robot', 'Vault', 'Profile', 'Session ID', 'Media to Eject', 'Data Movement', 'Instance or Database',
         'Share Host', 'Accelerator Optimization', 'Master', 'Priority', 'Transport', 'Pathname'
     }
+    
     for name in split_set:
         splited_name = name.split(' ')
         Contents_str = Contents_str.replace(name,''.join(splited_name))
@@ -32,8 +32,8 @@ with open('C:/Users/Administrator/Desktop/test_log/Export1_ext.txt', 'r') as f:
     for name in delete_set:
         Contents_str = Contents_str.replace(name,'')
     
-    # 데이터 비어있는 컬럼이름들 추가적인 삭제 필요
-    Contents_str = re.sub('[\w][\s][\w][\s][\d][\s][\D][\s][\w]', ' ', Contents_str)  
+    # # 전체 내용중 
+    # Contents_str = re.sub('[\w][\s][\w][\s][\d][\s][\D][\s][\w]', ' ', Contents_str)  
 
 with open('C:/Users/Administrator/Desktop/test_log/Export1_ext_rewrite.txt', 'w') as f:
     f.write(Contents_str)
