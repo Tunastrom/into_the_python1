@@ -1,11 +1,9 @@
 # 기존 타이핑
-
-
 def hello(r: list[str]):
     for a in r:
         print(a)
 
-hello()
+hello([1,2,3,4])
 
 # TypeHint는 인터프리터 언어인 Python에서 연산속도에 도움 1도 없다. 
 #### 왜 Type Hint를 사용하는가? ###

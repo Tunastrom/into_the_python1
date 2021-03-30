@@ -2,7 +2,7 @@ import re, math
 
 # with open('C:/Users/Administrator/Desktop/LCN_NBUActivity_202102.txt', 'r') as f: 
 #     text = f.read()
-text = 'incre'
+text = ''
 # pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
 pattern = '[\d]+[inc]'
 r = re.compile(pattern)
@@ -10,7 +10,7 @@ print(dir(r))
 search_result = r.search(text).group()
 print(search_result)
 
-# while search_result:
+# while search_result: 
 #     replaced_result = search_result.replace(' ','')
 #     text = text.replace(search_result,replaced_result)
 #     search_result=r.search(text).group()
