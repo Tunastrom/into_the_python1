@@ -2,13 +2,27 @@ import re, math
 
 # with open('C:/Users/Administrator/Desktop/LCN_NBUActivity_202102.txt', 'r') as f: 
 #     text = f.read()
-text = ''
+
+rubbish_list = {'tran', 'inc', 'arc'} 
+
+text = 'LCNCLD-DB-VSDB_mssql_inc'.lower() 
+print(text)
 # pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
-pattern = '[\d]+[inc]'
-r = re.compile(pattern)
-print(dir(r))
-search_result = r.search(text).group()
+# pattern = '[]+'
+# r = re.compile(pattern)
+# search_result = r.search(text).group()
+
+search_result = False
+
+for search_this in rubbish_list:
+    print(text.find(search_this))
+    if text.find(search_this) != -1:
+       search_result = True
+       break
+
 print(search_result)
+
+
 
 # while search_result: 
 #     replaced_result = search_result.replace(' ','')
