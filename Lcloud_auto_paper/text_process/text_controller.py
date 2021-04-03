@@ -1,11 +1,13 @@
 from text_process.pre_processor import *
 from text_process.log_selector import *
+from text_process.current_selector import *
+
 
 
 def text_controller():
     # 삭제해야할 컬럼명 정의 
 
-    txtpath = 'C:/Users/Administrator/Desktop/test_log/LCN_NBUActivity_202102'
+    txtpath = 'C:/Users/Administrator/Desktop/test_log/bpo_Export1'
 
     delete_set={  
             'Operation', 'State Details', 'copy', 'Robot', 'Vault', 'Profile', 'Session ID', 'Media to Eject', 'Data Movement', 'Instance or Database',
@@ -31,5 +33,9 @@ def text_controller():
     # 컬럼명 행과 데이터 행의 key값이 서로 매칭된 행(dict)들을 요소로 갖는 backuplog_dict 반환 
     backuplog_dict = pre_processor(txtpath, split_set, delete_set, needcolumns_dict)
     
-    # backuplog_dict에서 필요한 컬럼만 추출해 needlog_list에 append하여 반환
-    needlog_list = log_selector(backuplog_dict, needcolumns_dict, needconditions_set, rubbisies_set )
+    # backuplog_dict에서 성공한 full백업만 추출해 fullbackups_list에 append하여 반환
+    fullbackups_list, policynames_set = log_selector(backuplog_dict, needcolumns_dict, needconditions_set, rubbisies_set)
+    
+    # policy별로 가장 최근의 full백업 찾아내 1회 풀백업 용량 계산
+    current_seletor(fullbackups_list, needcolumns_dict)
+

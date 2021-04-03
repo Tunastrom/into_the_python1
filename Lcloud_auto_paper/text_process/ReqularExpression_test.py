@@ -1,26 +1,44 @@
-import re, math
+import re, math, datetime
 
 # with open('C:/Users/Administrator/Desktop/LCN_NBUActivity_202102.txt', 'r') as f: 
 #     text = f.read()
 
 rubbish_list = {'tran', 'inc', 'arc'} 
 
-text = 'LCNCLD-DB-VSDB_mssql_inc'.lower() 
-print(text)
-# pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
+text = '2021.1.23오전1:00:00' 
+# print(text)
+pattern = '\d+'
 # pattern = '[]+'
-# r = re.compile(pattern)
-# search_result = r.search(text).group()
+r = re.compile(pattern)
+year, month, day = '', '', ''
+for i in range(len(text)):
+    if year != '' and month != '' and day != '':
+        break
+    search_result = r.search(text).group()
+    if i == 0:
+        year = search_result
+        text = text.replace(search_result,'')
+    if i == 1:
+        month = search_result
+        text = text.replace(search_result,'')
+    if i == 2:
+        day = search_result
+        text = text.replace(search_result,'')
 
-search_result = False
+print('year, month, day: {}, {}, {}'.format(year, month, day))
+     
 
-for search_this in rubbish_list:
-    print(text.find(search_this))
-    if text.find(search_this) != -1:
-       search_result = True
-       break
+# search_result = False
+
+# for search_this in rubbish_list:
+#     print(text.find(search_this))
+#     if text.find(search_this) != -1:
+#        search_result = True
+#        break
 
 print(search_result)
+
+# datetime.date()
 
 
 

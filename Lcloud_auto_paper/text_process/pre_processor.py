@@ -30,8 +30,10 @@ def pre_processor(txtpath, split_set, delete_set, needcolumns_dict):
         del contents_list[1]
         # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가   
     backuplog_dict = row_split_into_dict(contents_list)
-    
+
+    # 사용완료한 rewrite 파일 삭제
     os.remove(txtpath+'_rewrite.txt')
+    print('사용완료한 rewrite 파일 삭제')
 
     return backuplog_dict
     
