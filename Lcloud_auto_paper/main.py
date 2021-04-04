@@ -1,6 +1,8 @@
-import sys, time
-sys.path.append('C:/6000EC2_git/into_the_python1/Lcloud_auto_paper/text_process')
-from text_process.text_controller import *
+from txt_process.txt_controller import *
+import sys
+import time
+
+sys.path.append('/txt_process')
 
 def main():
     start_time = time.time()

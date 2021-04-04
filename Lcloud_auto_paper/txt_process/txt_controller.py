@@ -1,6 +1,7 @@
-from text_process.pre_processor import *
-from text_process.log_selector import *
-from text_process.current_selector import *
+from txt_process.txt_workers import *
+
+
+
 
 
 
@@ -27,15 +28,16 @@ def text_controller():
     needconditions_set = {'Backup', '0', 'Default-Application-Backup'}
 
     # 불필요한 데이터 정의
-
-    rubbisies_set = { 'tran', 'inc', 'arc' }
+    rubbisies_set = { 'tran', 'inc', 'arc'}
     
     # 컬럼명 행과 데이터 행의 key값이 서로 매칭된 행(dict)들을 요소로 갖는 backuplog_dict 반환 
-    backuplog_dict = pre_processor(txtpath, split_set, delete_set, needcolumns_dict)
+    backuplog_dict = pre_processor(txtpath, split_set, delete_set)
     
     # backuplog_dict에서 성공한 full백업만 추출해 fullbackups_list에 append하여 반환
-    fullbackups_list, policynames_set = log_selector(backuplog_dict, needcolumns_dict, needconditions_set, rubbisies_set)
+    fullbackups_list, policynames_list = full_selector(backuplog_dict, needcolumns_dict, needconditions_set, rubbisies_set)
     
     # policy별로 가장 최근의 full백업 찾아내 1회 풀백업 용량 계산
-    current_seletor(fullbackups_list, needcolumns_dict)
+    one_time_fullbackup_dict = current_selector(fullbackups_list, policynames_list)
 
+    # 완성된 결과파일 새 txt파일에 쓰기
+    make_summary_txt(txtpath, one_time_fullbackup_dict)
