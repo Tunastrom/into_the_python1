@@ -41,12 +41,10 @@ def pre_processor(txtpath, split_set, delete_set):
 
 def date_splitter(pattern, string):
     split_str = string
-    # print(pattern)
     r = re.compile(pattern)
     search_result = r.search(split_str).group()
     print('날짜 공백 제거 중')
     while search_result:
-        # print(search_result)
         replaced_result = search_result.replace(' ', '')
         split_str = split_str.replace(search_result, replaced_result)
         try:
@@ -76,11 +74,11 @@ def row_split_into_dict(contents_list):
         if now_percent < 100:
             os.system('cls')
         i += 1
-    # print(len(backupLog_dict.items()))
     return backuplog_dict
 
 
 def full_selector(backuplog_dict,needcolumns_dict, needconditions_set, rubbisies_set):
+    print('full backup 선별 중')
     fullbackups_list = []
     fullindexs_dict = {}
     policynames_list = []
@@ -141,12 +139,13 @@ def full_selector(backuplog_dict,needcolumns_dict, needconditions_set, rubbisies
 
 
 def current_selector(fullbackups_list, policynames_list):
+
     one_time_fullbackup_dict = {}
     one_time_fullbackup_dict.setdefault('PolicyList', policynames_list)
     # policynames_list에 담긴 정책이름 for문 돌려서 날짜 가장 최근 것 검색한 뒤, 해당 날짜의 백업량 합 계산
-    start_time_index = fullbackups_list[0]['StartTime']
-    backupamount_index = fullbackups_list[0]['Kilobytes']
-    policyname_index = fullbackups_list[0]['JobPolicy']
+    start_time_index, backupamount_index, policyname_index = \
+        fullbackups_list[0]['StartTime'], fullbackups_list[0]['Kilobytes'], fullbackups_list[0]['JobPolicy']
+    print("정책별 마지막 풀백업 수행일 계산중")
     for policyname in policynames_list:
         timeandamount_dict = {}
         currenttime_date = datetime.date(2000, 2, 20)
@@ -170,6 +169,7 @@ def current_selector(fullbackups_list, policynames_list):
                     currenttime_date = comparing_time
                     timeandamount_dict.setdefault('Date', currenttime_date)
         one_time_fullbackup_dict.setdefault(policyname, timeandamount_dict)
+        print("정책별 마지막 풀백업의 용량 계산중")
         for row in fullbackups_list:
             if fullbackups_list.index(row) == 0:
                 continue
@@ -177,20 +177,16 @@ def current_selector(fullbackups_list, policynames_list):
                 print(row)
                 pattern = '\d+[.]\d+[.]\d+'
                 date_str = re.search(pattern, row[start_time_index]).group()
-                print('currenttime_date, date_onemore_date: {}, {}: '
-                      .format(one_time_fullbackup_dict[policyname]['Date'], date_str))
                 currentdate_date = one_time_fullbackup_dict[policyname]['Date']
-                print(type(currentdate_date))
                 year, month, date = date_separator(date_str)
                 if currentdate_date == datetime.date(year, month, date):
                     try:
-                        print('backupamount!!: {}'.format(int(row[backupamount_index].replace(',', ''))))
                         backupamount_int += int(row[backupamount_index].replace(',', ''))
                     except ValueError:
                         continue
-            one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
-            one_time_fullbackup_dict[policyname]['Gigabyte'] = round(backupamount_int/1024/1024, 2)
-            print('backupamount_int: {}'.format(backupamount_int))
+            if  type(currentdate_date) == datetime.date:
+                one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
+            one_time_fullbackup_dict[policyname]['Gigabyte'] = round(backupamount_int, 2)
     # 결과 프린트(확인용)
     for i in one_time_fullbackup_dict.items():
         print(i)
@@ -221,5 +217,5 @@ def date_separator(date_str):
 def make_summary_txt(txtpath, one_time_fullbackup_dict):
     one_time_fullbackup_str = json.dumps(one_time_fullbackup_dict)
     with open (txtpath+'_summary.txt', 'w') as f:
-        for row in one_time_fullbackup_dict.items():
-            f.writeline(one_time_fullbackup_str)
+        f.write(one_time_fullbackup_str)
+
