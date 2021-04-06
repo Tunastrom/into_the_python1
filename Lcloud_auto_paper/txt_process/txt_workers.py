@@ -72,7 +72,7 @@ def row_split_into_dict(contents_list):
         now_percent = math.floor((now_count / total_count) * 100)
         print('로그 정리 진행률 {}%'.format(now_percent))
         if now_percent < 100:
-            os.system('cls')
+            os.system('clear')
         i += 1
     return backuplog_dict
 
@@ -145,12 +145,13 @@ def current_selector(fullbackups_list, policynames_list):
     # policynames_list에 담긴 정책이름 for문 돌려서 날짜 가장 최근 것 검색한 뒤, 해당 날짜의 백업량 합 계산
     start_time_index, backupamount_index, policyname_index = \
         fullbackups_list[0]['StartTime'], fullbackups_list[0]['Kilobytes'], fullbackups_list[0]['JobPolicy']
-    print("정책별 마지막 풀백업 수행일 계산중")
+
     for policyname in policynames_list:
         timeandamount_dict = {}
         currenttime_date = datetime.date(2000, 2, 20)
         backupamount_int = 0
-        print('--------------------------------------{}------------------------------------'.format(policyname))
+        print('--------------------------------------{}의 마지막 풀백업 수행날짜 및 용량 계산중------------------------------------'
+              .format(policyname))
         for row in fullbackups_list:
             if fullbackups_list.index(row) == 0:
                 continue
@@ -169,24 +170,30 @@ def current_selector(fullbackups_list, policynames_list):
                     currenttime_date = comparing_time
                     timeandamount_dict.setdefault('Date', currenttime_date)
         one_time_fullbackup_dict.setdefault(policyname, timeandamount_dict)
-        print("정책별 마지막 풀백업의 용량 계산중")
+
         for row in fullbackups_list:
             if fullbackups_list.index(row) == 0:
                 continue
             if policyname == row[policyname_index]:
-                print(row)
+                # print(row)
                 pattern = '\d+[.]\d+[.]\d+'
                 date_str = re.search(pattern, row[start_time_index]).group()
                 currentdate_date = one_time_fullbackup_dict[policyname]['Date']
                 year, month, date = date_separator(date_str)
+                print('currentdate_date, datetime.date: {}, {}'
+                      .format(currentdate_date, datetime.date(year, month, date)))
                 if currentdate_date == datetime.date(year, month, date):
                     try:
+                        print('row[backupamount_index]: {}'.format(row[backupamount_index]))
+                        print('int(row[backupamount_index].replace(',
+                              ', '')): {}'.format(int(row[backupamount_index].replace(',', ''))))
                         backupamount_int += int(row[backupamount_index].replace(',', ''))
                     except ValueError:
                         continue
-            if  type(currentdate_date) == datetime.date:
+            if type(currentdate_date) == datetime.date:
                 one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
-            one_time_fullbackup_dict[policyname]['Gigabyte'] = round(backupamount_int, 2)
+            print('backupamount_int: {}'.format(backupamount_int))
+            one_time_fullbackup_dict[policyname]['Gigabyte'] = backupamount_int
     # 결과 프린트(확인용)
     for i in one_time_fullbackup_dict.items():
         print(i)
