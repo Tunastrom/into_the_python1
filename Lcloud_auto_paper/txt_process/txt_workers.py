@@ -163,6 +163,8 @@ def current_selector(fullbackups_list, policynames_list):
                 date_str = row[start_time_index]
                 # 2021, 04, 03 꼴의 년, 월, 일값 각각 year, month, day에 할당
                 year, month, day = date_separator(date_str)
+                if year == 0 or month == 0 or day == 0:
+                    continue
                 # 첫번째 StartTime currenttime_date으로 할당
                 if fullbackups_list.index(row) == 0:
                     currenttime_date = datetime.date(year, month, day)
@@ -215,19 +217,22 @@ def date_separator(date_str):
     pattern = '\d+'
     r = re.compile(pattern)
     year, month, day = 0, 0, 0
-    for i in range(len(date_str)):
-        if year != 0 and month != 0 and day != 0:
-            break
-        search_result = r.search(date_str).group()
-        if i == 0:
-            year = int(search_result)
-            date_str = date_str.replace(search_result, '')
-        if i == 1:
-            month = int(search_result)
-            date_str = date_str.replace('.{}.'.format(search_result), '')
-        if i == 2:
-            day = int(search_result)
-            date_str = date_str.replace(search_result, '')
+    try:
+        for i in range(len(date_str)):
+            if year != 0 and month != 0 and day != 0:
+                break
+                search_result = r.search(date_str).group()
+            if i == 0:
+                year = int(search_result)
+                date_str = date_str.replace(search_result, '')
+            if i == 1:
+                month = int(search_result)
+                date_str = date_str.replace('.{}.'.format(search_result), '')
+            if i == 2:
+                day = int(search_result)
+                date_str = date_str.replace(search_result, '')
+    except:
+        pass
     return year, month, day
 
 

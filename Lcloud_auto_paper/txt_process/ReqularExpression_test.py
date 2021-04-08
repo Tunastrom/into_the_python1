@@ -1,4 +1,4 @@
-import re, math, datetime
+import re, math, datetime, random
 
 # with open('C:/Users/Administrator/Desktop/LCN_NBUActivity_202102.txt', 'r') as f: 
 #     text = f.read()
@@ -54,3 +54,5 @@ print(search_result)
 # result= result.group().replace(' ','')
 
 # print(result)
+
+random.randint()
