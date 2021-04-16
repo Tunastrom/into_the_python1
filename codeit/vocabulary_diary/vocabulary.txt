@@ -1,0 +1,10 @@
+cat: 고양이
+apple: 사과
+church: 교회
+temple: 절
+wallet: 지갑
+backpack: 가방
+soap: 비누
+bicycle: 자전거
+fuck: 떡
+dog: 개

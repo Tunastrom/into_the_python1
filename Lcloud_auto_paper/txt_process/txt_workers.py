@@ -2,20 +2,33 @@ import re
 import os
 import math
 import datetime
+import chardet
 import json
 
 # Activity Monitor txt 파일 처리하는 메소드들
-
-
 def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
     print('전 처리 시작')
     # 전체 내용에서 단어 사이의 띄어쓰기 제거 및 값 없는 컬럼의 이름 삭제
     contents_str = ''
     with open(TXTPATH + '.txt', 'r') as f:
-        contents_str = f.read()
+        contents_list = f.readlines()
+        # encoding_check = chardet.detect(contents_str.encode)
+        # print(encoding_check)
         # start time 과 end time 공백제거
         date_pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
-        contents_str = date_splitter(date_pattern, contents_str)
+        print('날짜 공백 제거 시작')
+        switch = False
+        for line in contents_list:
+            try:
+                contents_str += date_splitter(date_pattern, line)
+            except AttributeError:
+                pass
+            percent = round((contents_list.index(line) / len(contents_list)) * 100)
+            if percent % 10 == 0 and switch is True:
+                print('날짜 공백 제거 {}% 완료'.format(percent))
+                switch = False
+            elif percent % 10 > 0:
+                switch = True
         print('컬럼 이름, 값 중간의 공백 제거')
         for name in SPLIT_SET:
             splited_name = name.split(' ')
@@ -23,6 +36,7 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         print('불필요한 컬럼 이름 삭제')
         for name in DELETE_SET:
             contents_str = contents_str.replace(name, '')
+        contents_str = contents_str.replace('\n', '')
     with open(TXTPATH + '_rewrite.txt', 'w') as f:
         f.write(contents_str)
         print('rewrite 완료')
@@ -43,7 +57,6 @@ def date_splitter(pattern, string):
     split_str = string
     r = re.compile(pattern)
     search_result = r.search(split_str).group()
-    print('날짜 공백 제거 중')
     while search_result:
         replaced_result = search_result.replace(' ', '')
         split_str = split_str.replace(search_result, replaced_result)
@@ -51,7 +64,6 @@ def date_splitter(pattern, string):
             search_result = r.search(split_str).group()
         except:
             search_result = False
-    os.system('cls')
     return split_str
 
 
@@ -62,23 +74,28 @@ def row_split_into_dict(contents_list):
         splited_row = row.split(' ')
         row_dict = {}
         j = 0
+        switch = False
         for word in splited_row:
             if word != '':
-                row_dict.setdefault(j, word)
+                row_dict[j] = word
                 j += 1
-        backuplog_dict.setdefault(i, row_dict)
+        backuplog_dict[i] = row_dict
         now_count = contents_list.index(row) + 1
         total_count = len(contents_list)
         now_percent = math.floor((now_count / total_count) * 100)
-        print('로그 정리 진행률 {}%'.format(now_percent))
-        if now_percent < 100:
-            os.system('cls')
+        if now_percent % 10 == 0 and switch is True:
+            print('로그 정리 진행률 {}%'.format(now_percent))
+            switch = False
+        elif now_percent % 10 > 0:
+            switch = True
         i += 1
+
     return backuplog_dict
 
 
 def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIES_SET):
     print('full backup 선별 중')
+    print('backuplog_dict: {}'.format(backuplog_dict))
     fullbackups_list = []
     fullindexs_dict = {}
     policynames_set = set()
@@ -103,6 +120,7 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIE
                             check_result += 1
                         # fullbackups_list에 추가하기 전 임시 dictionary에 key, value 추가
                         needrow_dict[x] = v
+                        # print('needrow_dict: {}'.format(needrow_dict))
                         x += 1
             # full backup log가 아닐 때 다음행으로 넘어가기
             if check_result == 0 or check_result == 1:
@@ -134,12 +152,14 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIE
                 if v in NEEDCOLUMNS_DICT.keys():
                     NEEDCOLUMNS_DICT.update({''+v:k})
             fullbackups_list.append(NEEDCOLUMNS_DICT)
+            print('NEEDCOLUMNS_DICT: {}'.format(fullbackups_list[0]))
     fullbackups_list[0] = fullindexs_dict
     return fullbackups_list, list(policynames_set)
 
 
 def current_selector(fullbackups_list, policynames_list):
-    print('fullbackup_list: \n {}'.format(fullbackups_list))
+    # print('-----------------------------------------------fullbackup_list------------------------------------------\n{}'
+    #       .format(fullbackups_list))
     one_time_fullbackup_dict = {}
     one_time_fullbackup_dict.setdefault('PolicyList', policynames_list)
     # policynames_list에 담긴 정책이름 for문 돌려서 날짜 가장 최근 것 검색한 뒤, 해당 날짜의 백업량 합 계산
