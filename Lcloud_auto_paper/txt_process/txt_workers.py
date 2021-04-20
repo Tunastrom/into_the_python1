@@ -20,9 +20,12 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         switch = False
         for line in contents_list:
             try:
+                # 날짜 공백 제거함수 수행 후 결과 새로운 문자열에 추가
                 contents_str += date_splitter(date_pattern, line)
             except AttributeError:
-                pass
+                # 날짜가 없는 행은 그대로 추가
+                contents_str += line
+            # 날짜 공백 제거 진행률 표현
             percent = round((contents_list.index(line) / len(contents_list)) * 100)
             if percent % 10 == 0 and switch is True:
                 print('날짜 공백 제거 {}% 완료'.format(percent))
@@ -36,20 +39,13 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         print('불필요한 컬럼 이름 삭제')
         for name in DELETE_SET:
             contents_str = contents_str.replace(name, '')
-        contents_str = contents_str.replace('\n', '')
-    with open(TXTPATH + '_rewrite.txt', 'w') as f:
-        f.write(contents_str)
-        print('rewrite 완료')
-    with open(TXTPATH + '_rewrite.txt', 'r') as f:
-        contents_list = f.readlines()
+        # 전체 내용을 \n을 기준으로 나누어 각 행을 요소로 갖는 리스트 만들기
+        contents_list = contents_str.split('\n')
         # 불필요한 행 삭제
         del contents_list[0:7]
         del contents_list[1]
-        # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
+    # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
     backuplog_dict = row_split_into_dict(contents_list)
-    # 사용완료한 rewrite 파일 삭제
-    os.remove(TXTPATH + '_rewrite.txt')
-    print('사용완료한 rewrite 파일 삭제')
     return backuplog_dict
 
 
@@ -93,9 +89,8 @@ def row_split_into_dict(contents_list):
     return backuplog_dict
 
 
-def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIES_SET):
+def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES_SET):
     print('full backup 선별 중')
-    print('backuplog_dict: {}'.format(backuplog_dict))
     fullbackups_list = []
     fullindexs_dict = {}
     policynames_set = set()
@@ -108,28 +103,30 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIE
             needrow_dict = dict()
             x = 0
             check_result = 0
-            # ImgClean = False
             for k, v in row_dict.items():
+                # print('k, v: {}, {}'.format(k, v))
                 for key, value in NEEDCOLUMNS_DICT.items():
-                    # neecolumns_dict에 저장된 index(value)와 일치하는 index의 값(v)들 needrow_dict에 순차 추가
+                    # needcolumns_dict에 저장된 index(value)와 일치하는 index의 값(v)들 needrow_dict에 순차 추가
                     if k == value:
                         # fullbackups_list의 컬럼명과 데이터가 매칭되는 index값 fullindexs_dict에 저장
                         fullindexs_dict[key] = x
                         # 'Backup', '0', 'Default-Application-Backup' 포함하는 개수 체크
-                        if v in NEEDICONDITIONS_SET:
+                        if v in NEEDCONDITIONS_SET:
                             check_result += 1
                         # fullbackups_list에 추가하기 전 임시 dictionary에 key, value 추가
                         needrow_dict[x] = v
-                        # print('needrow_dict: {}'.format(needrow_dict))
+                        # print('k, v: {}, {}'.format(k, v))
                         x += 1
+                # print('needrow_dict: {}'.format(needrow_dict))
+                # print('check_reuslt: {}'.format(check_result))
             # full backup log가 아닐 때 다음행으로 넘어가기
             if check_result == 0 or check_result == 1:
                 continue
-            search_result = False
             # schedule명에 'full'포함되는 것만 fullbackups_list에추가
+            search_result = False
             if check_result == 2:
                 policy_index = NEEDCOLUMNS_DICT['JobSchedule']
-                if row_dict[policy_index].find('full') != -1:
+                if (row_dict[policy_index]).lower().find('full') != -1:
                     fullbackups_list.append(needrow_dict)
                     # job policy 이름 policynames_list에 추가
                     policynames_set.add(row_dict[NEEDCOLUMNS_DICT['JobPolicy']])
@@ -149,17 +146,17 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDICONDITIONS_SET, RUBBISIE
             # Check the index of column which is needed to caculate backup amount
             for key, value in row_dict.items():
                 k, v = key, value
+                # print('k, v: {}, {}'.format(k, v))
                 if v in NEEDCOLUMNS_DICT.keys():
                     NEEDCOLUMNS_DICT.update({''+v:k})
             fullbackups_list.append(NEEDCOLUMNS_DICT)
-            print('NEEDCOLUMNS_DICT: {}'.format(fullbackups_list[0]))
     fullbackups_list[0] = fullindexs_dict
+    for line in fullbackups_list:
+        print(f'<fullbackups_list> {line}')
     return fullbackups_list, list(policynames_set)
 
 
 def current_selector(fullbackups_list, policynames_list):
-    # print('-----------------------------------------------fullbackup_list------------------------------------------\n{}'
-    #       .format(fullbackups_list))
     one_time_fullbackup_dict = {}
     one_time_fullbackup_dict.setdefault('PolicyList', policynames_list)
     # policynames_list에 담긴 정책이름 for문 돌려서 날짜 가장 최근 것 검색한 뒤, 해당 날짜의 백업량 합 계산
@@ -170,9 +167,9 @@ def current_selector(fullbackups_list, policynames_list):
         timeandamount_dict = {}
         currenttime_date = datetime.date(2000, 2, 20)
         backupamount_int = 0
+        gigabyte = 0
         print('--------------------------------------{}의 마지막 풀백업 수행날짜 및 용량 계산중------------------------------------'
               .format(policyname))
-
         # 마지막 full backup 날짜 계산
         for row in fullbackups_list:
             currentdate_date = ''
@@ -183,6 +180,7 @@ def current_selector(fullbackups_list, policynames_list):
                 date_str = row[start_time_index]
                 # 2021, 04, 03 꼴의 년, 월, 일값 각각 year, month, day에 할당
                 year, month, day = date_separator(date_str)
+                # print ('year, month, day: {}, {}, {}'.format(year, month, day))
                 if year == 0 or month == 0 or day == 0:
                     continue
                 # 첫번째 StartTime currenttime_date으로 할당
@@ -193,38 +191,43 @@ def current_selector(fullbackups_list, policynames_list):
                 comparing_time = datetime.date(year, month, day)
                 if comparing_time > currenttime_date:
                     currenttime_date = comparing_time
+                    print('currenttime_date: {}'.format(currenttime_date))
                     timeandamount_dict.setdefault('Date', currenttime_date)
-        one_time_fullbackup_dict.setdefault(policyname, timeandamount_dict)
+                    one_time_fullbackup_dict.setdefault(policyname, timeandamount_dict)
+        # print('one_time_fullbackup_dict: {}'.format(one_time_fullbackup_dict))
 
         # 마지막 full backup 수행일자의 백업용량 계산
         for row in fullbackups_list:
             if fullbackups_list.index(row) == 0:
                 continue
+            # 현재 작업중인 정책명과 읽어들인 행의 정책명을 비교해 일치하는 것 찾기
             if policyname == row[policyname_index]:
-                # print(row)
                 pattern = '\d+[.]\d+[.]\d+'
+                # 현재 행의 start 날짜 가져오기
                 date_str = re.search(pattern, row[start_time_index]).group()
+                # 현재 작업중인 정책의 최신 start 날짜 가져오기
                 currentdate_date = one_time_fullbackup_dict[policyname]['Date']
+                # currentdate_date의 타입이 datetime.date일 때만 현재 행의 날짜를 date_saperator에 보내 year, month, date로 분해
                 if type(currentdate_date) == datetime.date:
                     year, month, date = date_separator(date_str)
-                print('currentdate_date, datetime.date: {}({}), {}({})'
-                       .format(currentdate_date,type(currentdate_date),
-                              datetime.date(year, month, date), type(datetime.date(year, month, date))))
+                # 분해된 현재 행의 start 날짜를 datetime.date 타입으로 바꾸어 최신날짜와 비교
                 if currentdate_date == datetime.date(year, month, date):
+                    # 최신날짜와 같으면 backupamount_int에 누적
                     try:
-                        print('row[backupamount_index]: {}'.format(row[backupamount_index]))
                         print('int(row[backupamount_index].replace(',
                                ', '')): {}'.format(int(row[backupamount_index].replace(',', ''))))
                         backupamount_int += int(row[backupamount_index].replace(',', ''))
                     except ValueError:
                         continue
-            if type(currentdate_date) == datetime.date:
-                one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
-            # print('backupamount_int: {}'.format(backupamount_int))
-            gigabyte = round(backupamount_int/1024/1024, 2)
-            if 0 < gigabyte and gigabyte < 1:
-                gigabyte = 1
-            one_time_fullbackup_dict[policyname]['Gigabyte'] = gigabyte
+        # 현재 작업중인 정책의 최신날짜가 datetime.date타입(xxxx.xx.xx)이면 xxxx-xx-xx형태로 변환
+        if type(currentdate_date) == datetime.date:
+            one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
+        # 현재 작업중인 정책의 최신날짜 기준 백업용량을 Gigabyte단위로 환산해 저장
+        gigabyte = round(backupamount_int/1024/1024, 2)
+        # 현재 작업중인 정책의 최신날짜 기준 백업용량이 1기가 미만이라면 1기가로 올려서 저장
+        if 0 < gigabyte and gigabyte < 1:
+             gigabyte = 1
+        one_time_fullbackup_dict[policyname]['Gigabyte'] = gigabyte
 
     # 결과 프린트(확인용)
     for i in one_time_fullbackup_dict.items():
@@ -232,7 +235,7 @@ def current_selector(fullbackups_list, policynames_list):
 
     return one_time_fullbackup_dict
 
-
+# xxxx특문xx특문xx 형태로 저장된 날짜를 year = xxxx, month = xx, day= xx 형태로 변환
 def date_separator(date_str):
     pattern = '\d+'
     r = re.compile(pattern)
@@ -241,7 +244,7 @@ def date_separator(date_str):
         for i in range(len(date_str)):
             if year != 0 and month != 0 and day != 0:
                 break
-                search_result = r.search(date_str).group()
+            search_result = r.search(date_str).group()
             if i == 0:
                 year = int(search_result)
                 date_str = date_str.replace(search_result, '')
@@ -255,7 +258,7 @@ def date_separator(date_str):
         pass
     return year, month, day
 
-
+# 완성된 정책별 최신 풀백업 수행날짜 및 풀백업 용량을 .txt 파일로 저장
 def make_summary_txt(TXTPATH, one_time_fullbackup_dict):
 
     # one_time_fullbackup_str = json.dumps(one_time_fullbackup_dict)

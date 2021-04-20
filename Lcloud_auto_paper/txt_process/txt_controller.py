@@ -8,7 +8,7 @@ from txt_process.txt_workers import *
 def text_controller():
     # 삭제해야할 컬럼명 정의 
 
-    TXTPATH = 'C:/Users/Administrator/Desktop/test_log/2021.Mar/IS'
+    TXTPATH = 'C:/Users/Administrator/Desktop/test_log/2021.Mar/DWPSSO_nbuactivity-20210330'
 
     DELETE_SET={  
             'Operation', 'State Details', 'copy', 'Robot', 'Vault', 'Profile', 'Session ID', 'Media to Eject', 'Data Movement', 'Instance or Database',
