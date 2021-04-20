@@ -1,15 +1,9 @@
 from txt_process.txt_workers import *
 
 
+def text_controller(TXTPATH):
 
-
-
-
-def text_controller():
-    # 삭제해야할 컬럼명 정의 
-
-    TXTPATH = 'C:/Users/Administrator/Desktop/test_log/2021.Mar/DWPSSO_nbuactivity-20210330'
-
+    # 작업에 불필요한 컬럼명들
     DELETE_SET={  
             'Operation', 'State Details', 'copy', 'Robot', 'Vault', 'Profile', 'Session ID', 'Media to Eject', 'Data Movement', 'Instance or Database',
             'Share Host', 'Accelerator Optimization', 'Master', 'Priority', 'Transport', 'Pathname'
@@ -21,14 +15,14 @@ def text_controller():
             'Image Cleanup', 'Catalog Backup', '% Complete (Estimated)', 'Job PID', 'Parent Job ID', 'Active Start', 'Active Elapsed', 'Deduplication Rate'
     }
 
-    # 필요한 컬럼명 정의
+    # 작업에 필요한 컬럼명 정의
     NEEDCOLUMNS_DICT = {'Type':0, 'Status':0, 'Client':0 ,'JobPolicy':0, 'JobSchedule':0, 'StartTime':0, 'Kilobytes':0}
 
-    # 필요한 데이터 정의
+    # 필요한 데이터 정의(추가적인 연산 필요)
     NEEDCONDITIONS_SET = {'Backup', '0', 'Default-Application-Backup'}
 
     # 불필요한 데이터 정의
-    RUBBISIES_SET = { 'tran', 'inc', 'arc'}
+    RUBBISIES_SET = {'tran', 'inc', 'arc'}
     
     # 컬럼명 행과 데이터 행의 key값이 서로 매칭된 행(dict)들을 요소로 갖는 backuplog_dict 반환 
     backuplog_dict = pre_processor(TXTPATH, SPLIT_SET, DELETE_SET)

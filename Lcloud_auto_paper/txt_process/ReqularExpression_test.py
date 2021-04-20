@@ -5,37 +5,39 @@ import re, math, datetime, random
 
 rubbish_list = {'tran', 'inc', 'arc'} 
 
-text = '2021.1.23오전1:00:00' 
-# print(text)
-pattern = '\d+'
-# pattern = '[]+'
-r = re.compile(pattern)
-year, month, day = '', '', ''
-for i in range(len(text)):
-    if year != '' and month != '' and day != '':
-        break
-    search_result = r.search(text).group()
-    if i == 0:
-        year = search_result
-        text = text.replace(search_result,'')
-    if i == 1:
-        month = search_result
-        text = text.replace(search_result,'')
-    if i == 2:
-        day = search_result
-        text = text.replace(search_result,'')
+text = 'psctkdbs02_rman_arch'
 
-print('year, month, day: {}, {}, {}'.format(year, month, day))
+# print(text)
+# pattern = '\d+[.]\d+[.]\d+'
+# # pattern = '[]+'
+# result = re.search(pattern, text).group()
+# print(result)
+# year, month, day = '', '', ''
+# for i in range(len(text)):
+#     if year != '' and month != '' and day != '':
+#         break
+#     search_result = r.search(text).group()
+#     print(search_result)
+#     if i == 0:
+#         year = search_result
+#         text = text.replace(search_result,'')
+#     if i == 1:
+#         month = search_result
+#         text = text.replace(search_result,'')
+#     if i == 2:
+#         day = search_result
+#         text = text.replace(search_result,'')
+#
+# print('year, month, day: {}, {}, {}'.format(year, month, day))
      
 
-# search_result = False
+search_result = False
 
-# for search_this in rubbish_list:
-#     print(text.find(search_this))
-#     if text.find(search_this) != -1:
-#        search_result = True
-#        break
-
+for search_this in rubbish_list:
+    print(text.lower().find(search_this))
+    if text.lower().find(search_this) != -1:
+       search_result = True
+       break
 print(search_result)
 
 # datetime.date()
@@ -55,4 +57,4 @@ print(search_result)
 
 # print(result)
 
-random.randint()
+# random.randint()
