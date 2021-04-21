@@ -1,9 +1,6 @@
 import re
-import os
 import math
 import datetime
-import chardet
-import json
 
 # Activity Monitor txt 파일 처리하는 메소드들
 def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
@@ -12,8 +9,6 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
     contents_str = ''
     with open(TXTPATH + '.txt', 'r') as f:
         contents_list = f.readlines()
-        # encoding_check = chardet.detect(contents_str.encode)
-        # print(encoding_check)
         # start time 과 end time 공백제거
         date_pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
         print('날짜 공백 제거 시작')
@@ -21,7 +16,7 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         for line in contents_list:
             try:
                 # 날짜 공백 제거함수 수행 후 결과 새로운 문자열에 추가
-                contents_str += date_splitter(date_pattern, line)
+                contents_str += string_splitter(date_pattern, line)
             except AttributeError:
                 # 날짜가 없는 행은 그대로 추가
                 contents_str += line
@@ -45,11 +40,11 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         del contents_list[0:7]
         del contents_list[1]
     # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
-    backuplog_dict = row_split_into_dict(contents_list)
+    backuplog_dict = list_split_into_dict(contents_list)
     return backuplog_dict
 
-
-def date_splitter(pattern, string):
+# 들어온 문자열의 내용 중에서 함께 가져온 정규표현식으로 검색되는 부분들의 공백제거후 string으로 반환
+def string_splitter(pattern, string):
     split_str = string
     r = re.compile(pattern)
     search_result = r.search(split_str).group()
@@ -59,25 +54,27 @@ def date_splitter(pattern, string):
         try:
             search_result = r.search(split_str).group()
         except:
+            # 정규표현식으로 검색되는 결과 없음.
             search_result = False
     return split_str
 
-
-def row_split_into_dict(contents_list):
+# 들어온 문자열 리스트의 요소를 공백제거 및 공백제거후 발생하는 ''요소들 제거후 dictionary형태로 반환
+def list_split_into_dict(string_list):
     backuplog_dict = {}
     i = 0
-    for row in contents_list:
-        splited_row = row.split(' ')
+    # 요소들 꺼내오기
+    for element in string_list:
+        splited_element = element.split(' ')
         row_dict = {}
         j = 0
         switch = False
-        for word in splited_row:
+        for word in splited_element:
             if word != '':
                 row_dict[j] = word
                 j += 1
         backuplog_dict[i] = row_dict
-        now_count = contents_list.index(row) + 1
-        total_count = len(contents_list)
+        now_count = string_list.index(element) + 1
+        total_count = len(string_list)
         now_percent = math.floor((now_count / total_count) * 100)
         if now_percent % 10 == 0 and switch is True:
             print('로그 정리 진행률 {}%'.format(now_percent))
@@ -146,21 +143,20 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES
                     NEEDCOLUMNS_DICT.update({''+v:k})
             fullbackups_list.append(NEEDCOLUMNS_DICT)
     fullbackups_list[0] = fullindexs_dict
-    for line in fullbackups_list:
-        print(f'<fullbackups_list> {line}')
+    # for line in fullbackups_list:
+    #     print(f'<fullbackups_list> {line}')
     return fullbackups_list, list(policynames_set)
 
 # 정책명에 tran, arc, inc 포함되어 있는지, file backup일 경우 schedule명에 'full' 있는 지 까지 체크
 def policyname_checker(*args):
-    search_result = False
+    rubbish_or_not = False
     for search_this in args[0]:
         if args[1].lower().find(search_this) != -1:
-            search_result = True
+            rubbish_or_not = True
             break
-    if search_result is False and len(args) == 3 and args[2].lower().find('full') == -1:
-        search_result = True
-    return search_result
-
+    if rubbish_or_not is False and len(args) == 3 and args[2].lower().find('full') == -1:
+        rubbish = True
+    return rubbish_or_not
 
 
 def current_selector(fullbackups_list, policynames_list):
@@ -212,7 +208,7 @@ def current_selector(fullbackups_list, policynames_list):
                 try:
                     date_str = re.search(pattern, row[start_time_index]).group()
                 except:
-                    # 에러 발생시엔 요건에 맞지 않는 행(ex. kilobyte 컬럼 공백)이므로 다음 행으로 이동
+                    # 에러 발생시엔 필요없는 행(ex. kilobyte 컬럼 공백)이므로 다음 행으로 이동
                     continue
                 # 현재 작업중인 정책의 최신 start 날짜 가져오기
                 currentdate_date = one_time_fullbackup_dict[policyname]['Date']
@@ -228,17 +224,16 @@ def current_selector(fullbackups_list, policynames_list):
                         continue
         print(f'backupamount_int: {backupamount_int}')
         # 현재 작업중인 정책의 최신날짜가 datetime.date타입(xxxx.xx.xx)이면 xxxx-xx-xx형태로 변환
-        if type(currentdate_date) == datetime.date:
-            one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
+        # if type(currentdate_date) == datetime.date:
+        #     one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
         # 현재 작업중인 정책의 최신날짜 기준 백업용량을 Gigabyte단위로 환산해 저장
         gigabyte = round(backupamount_int/1024/1024, 2)
         # 현재 작업중인 정책의 최신날짜 기준 백업용량이 1기가 미만이라면 1기가로 올려서 저장
         if 0 < gigabyte and gigabyte < 1:
              gigabyte = 1
-        for i in one_time_fullbackup_dict.items():
-            print(i)
         one_time_fullbackup_dict[policyname]['Gigabyte'] = gigabyte
     # 결과 프린트(확인용)
+    print('1회 full backup 계산 완료!')
     for i in one_time_fullbackup_dict.items():
         print(i)
 
@@ -278,5 +273,7 @@ def make_summary_txt(TXTPATH, one_time_fullbackup_dict):
         for line in write_list:
            f.write(str(line))
            f.write('\n')
+    print(TXTPATH+'_summary.txt 파일이 생성되었습니다!')
+    return one_time_fullbackup_dict
 
 

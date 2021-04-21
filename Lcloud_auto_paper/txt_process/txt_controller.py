@@ -1,7 +1,7 @@
 from txt_process.txt_workers import *
 
 
-def text_controller(TXTPATH):
+def txt_controller(TXTPATH):
 
     # 작업에 불필요한 컬럼명들
     DELETE_SET={  
@@ -24,7 +24,7 @@ def text_controller(TXTPATH):
     # 불필요한 데이터 정의
     RUBBISIES_SET = {'tran', 'inc', 'arc'}
     
-    # 컬럼명 행과 데이터 행의 key값이 서로 매칭된 행(dict)들을 요소로 갖는 backuplog_dict 반환 
+    # 컬럼명 행 요소([0])와 데이터 행 요소([1]~[n])의 value에 저장된 dictionary의 key값이 서로 매칭된 행(dict)들을 요소로 갖는 backuplog_dict 반환
     backuplog_dict = pre_processor(TXTPATH, SPLIT_SET, DELETE_SET)
     
     # backuplog_dict에서 성공한 full백업만 추출해 fullbackups_list에 append하여 반환
@@ -33,5 +33,7 @@ def text_controller(TXTPATH):
     # policy별로 가장 최근의 full백업 찾아내 1회 풀백업 용량 계산
     one_time_fullbackup_dict = current_selector(fullbackups_list, policynames_list)
 
-    # 완성된 결과파일 새 txt파일에 쓰기
-    make_summary_txt(TXTPATH, one_time_fullbackup_dict)
+    # 완성된 결과파일 새 txt파일에 쓰고 완성된 one_time_fullbackup_dict 반환
+    return make_summary_txt(TXTPATH, one_time_fullbackup_dict)
+
+
