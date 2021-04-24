@@ -4,14 +4,14 @@ import datetime
 
 # Activity Monitor txt 파일 처리하는 메소드들
 def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
-    print('전 처리 시작')
+    print('=============================================전 처리 시작===================================================')
     # 전체 내용에서 단어 사이의 띄어쓰기 제거 및 값 없는 컬럼의 이름 삭제
     contents_str = ''
     with open(TXTPATH + '.txt', 'r') as f:
         contents_list = f.readlines()
         # start time 과 end time 공백제거
         date_pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]\D+[ ]\d+[:]\d+[:]\d+'
-        print('날짜 공백 제거 시작')
+        print('<날짜 공백 제거 시작>')
         switch = False
         for line in contents_list:
             try:
@@ -27,11 +27,11 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
                 switch = False
             elif percent % 10 > 0:
                 switch = True
-        print('컬럼 이름, 값 중간의 공백 제거')
+        print('<컬럼 이름, 값 중간의 공백 제거>')
         for name in SPLIT_SET:
             splited_name = name.split(' ')
             contents_str = contents_str.replace(name, ''.join(splited_name))
-        print('불필요한 컬럼 이름 삭제')
+        print('<불필요한 컬럼 이름 삭제>')
         for name in DELETE_SET:
             contents_str = contents_str.replace(name, '')
         # 전체 내용을 \n을 기준으로 나누어 각 행을 요소로 갖는 리스트 만들기
@@ -40,6 +40,7 @@ def pre_processor(TXTPATH, SPLIT_SET, DELETE_SET):
         del contents_list[0:7]
         del contents_list[1]
     # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
+    print('<백업 로그 내 불필요 값 제거>')
     backuplog_dict = list_split_into_dict(contents_list)
     return backuplog_dict
 
@@ -62,12 +63,12 @@ def string_splitter(pattern, string):
 def list_split_into_dict(string_list):
     backuplog_dict = {}
     i = 0
+    switch = bool
     # 요소들 꺼내오기
     for element in string_list:
         splited_element = element.split(' ')
         row_dict = {}
         j = 0
-        switch = False
         for word in splited_element:
             if word != '':
                 row_dict[j] = word
@@ -77,7 +78,7 @@ def list_split_into_dict(string_list):
         total_count = len(string_list)
         now_percent = math.floor((now_count / total_count) * 100)
         if now_percent % 10 == 0 and switch is True:
-            print('로그 정리 진행률 {}%'.format(now_percent))
+            print('백업 로그 내 불필요 값 제거 진행률 {}%'.format(now_percent))
             switch = False
         elif now_percent % 10 > 0:
             switch = True
@@ -87,7 +88,7 @@ def list_split_into_dict(string_list):
 
 
 def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES_SET):
-    print('full backup 선별 중')
+    print('==============================================full backup 선별 시작=========================================================')
     fullbackups_list = []
     fullindexs_dict = {}
     policynames_set = set()
@@ -118,17 +119,19 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES
             # Full Backup 정책인지 아닌지 체크해 fullbackups_list에 추가
             search_result = False
             if check_result == 2:
+                kilobytes = NEEDCOLUMNS_DICT['Kilobytes']
                 policy_index = NEEDCOLUMNS_DICT['JobPolicy']
                 schedule_index = NEEDCOLUMNS_DICT['JobSchedule']
-                search_result = policyname_checker(RUBBISIES_SET, row_dict[policy_index], row_dict[schedule_index])
+                search_result = policy_checker(RUBBISIES_SET, row_dict[kilobytes], row_dict[policy_index], row_dict[schedule_index])
                 if search_result is False:
                     fullbackups_list.append(needrow_dict)
                     # job policy 이름 policynames_set에 추가
                     policynames_set.add(row_dict[NEEDCOLUMNS_DICT['JobPolicy']])
             # schedule명 Default Application Backup 인 것 중 full 백업만 fullbackups_list에추가
             if check_result == 3:
+                kilobytes = NEEDCOLUMNS_DICT['Kilobytes']
                 policy_index = NEEDCOLUMNS_DICT['JobPolicy']
-                search_result = policyname_checker(RUBBISIES_SET, row_dict[policy_index])
+                search_result = policy_checker(RUBBISIES_SET, row_dict[kilobytes], row_dict[policy_index])
                 if search_result is False:
                     fullbackups_list.append(needrow_dict)
                     # job policy 이름 policynames_set에 추가
@@ -144,19 +147,30 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES
             fullbackups_list.append(NEEDCOLUMNS_DICT)
     fullbackups_list[0] = fullindexs_dict
     # for line in fullbackups_list:
-    #     print(f'<fullbackups_list> {line}')
+    #      print(f'<fullbackups_list> {line}')
     return fullbackups_list, list(policynames_set)
 
+
 # 정책명에 tran, arc, inc 포함되어 있는지, file backup일 경우 schedule명에 'full' 있는 지 까지 체크
-def policyname_checker(*args):
-    rubbish_or_not = False
-    for search_this in args[0]:
-        if args[1].lower().find(search_this) != -1:
-            rubbish_or_not = True
-            break
-    if rubbish_or_not is False and len(args) == 3 and args[2].lower().find('full') == -1:
-        rubbish = True
-    return rubbish_or_not
+def policy_checker(*args):
+    rubbish = False
+    # Kilobytes 행에 백업용량이 아닌 다른 값이 들어왔을 때 해당 job 걸러내기
+    try:
+        int(''.join(args[1].split(',')))
+    except:
+         rubbish = True
+         return rubbish
+    if len(args) == 3:
+        # schedule 이름이 Default-Application-Backup일때 policy name에 tran, inc, arc 들어간 것 찾아내 해당 job 걸러내기
+        for search_this in args[0]:
+            if args[2].lower().find(search_this) != -1:
+                rubbish = True
+                return rubbish
+    elif len(args) == 4:
+        # file backup 중 schedule 이름에 full 들어가지 않은 것 찾아내 해당 job 걸러내기
+        if rubbish is False and args[3].lower().find('full') == -1:
+            rubbish = True
+    return rubbish
 
 
 def current_selector(fullbackups_list, policynames_list):
@@ -170,7 +184,7 @@ def current_selector(fullbackups_list, policynames_list):
         timeandamount_dict = {}
         currenttime_date = datetime.date(2000, 2, 20)
         backupamount_int = 0
-        print('--------------------------------------{}의 마지막 풀백업 수행날짜 및 용량 계산중------------------------------------'
+        print('<{}의 마지막 풀백업 수행날짜 및 용량>'
               .format(policyname))
         # 마지막 full backup 날짜 계산
         for row in fullbackups_list:
@@ -190,13 +204,12 @@ def current_selector(fullbackups_list, policynames_list):
                     currenttime_date = datetime.date(year, month, day)
                     continue
                 # 그 이후의 것들은 currenttime_date와 비교한 후 더 클때만 할당.
-                comparing_time = datetime.date(year, month, day)
-                if comparing_time > currenttime_date:
-                    currenttime_date = comparing_time
-                    print('currenttime_date: {}'.format(currenttime_date))
-                timeandamount_dict.setdefault('Date', currenttime_date)
-                one_time_fullbackup_dict[policyname] = timeandamount_dict
-
+                comparingtime_date = datetime.date(year, month, day)
+                if comparingtime_date > currenttime_date:
+                    currenttime_date = comparingtime_date
+                    timeandamount_dict.setdefault('Date', currenttime_date)
+        print(f'current_start: {timeandamount_dict["Date"]}')
+        one_time_fullbackup_dict[policyname] = timeandamount_dict
         # 마지막 full backup 수행일자의 백업용량 계산
         for row in fullbackups_list:
             if fullbackups_list.index(row) == 0:
@@ -224,16 +237,16 @@ def current_selector(fullbackups_list, policynames_list):
                         continue
         print(f'backupamount_int: {backupamount_int}')
         # 현재 작업중인 정책의 최신날짜가 datetime.date타입(xxxx.xx.xx)이면 xxxx-xx-xx형태로 변환
-        # if type(currentdate_date) == datetime.date:
-        #     one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
+        if type(currentdate_date) == datetime.date:
+             one_time_fullbackup_dict[policyname]['Date'] = currentdate_date.strftime('%Y-%m-%d')
         # 현재 작업중인 정책의 최신날짜 기준 백업용량을 Gigabyte단위로 환산해 저장
         gigabyte = round(backupamount_int/1024/1024, 2)
         # 현재 작업중인 정책의 최신날짜 기준 백업용량이 1기가 미만이라면 1기가로 올려서 저장
-        if 0 < gigabyte and gigabyte < 1:
+        if 0 <= gigabyte and gigabyte < 1:
              gigabyte = 1
         one_time_fullbackup_dict[policyname]['Gigabyte'] = gigabyte
     # 결과 프린트(확인용)
-    print('1회 full backup 계산 완료!')
+    print('===============================================1회 full backup 계산 완료!=====================================================')
     for i in one_time_fullbackup_dict.items():
         print(i)
 
@@ -273,7 +286,7 @@ def make_summary_txt(TXTPATH, one_time_fullbackup_dict):
         for line in write_list:
            f.write(str(line))
            f.write('\n')
-    print(TXTPATH+'_summary.txt 파일이 생성되었습니다!')
+    print('<'+TXTPATH+'_summary.txt 파일이 생성되었습니다!>')
     return one_time_fullbackup_dict
 
 

@@ -8,7 +8,7 @@ from xlsx_process.xlsx_controller import xlsx_controller
 
 def main():
     start_time = time.time()
-    txt_path = 'C:/Lcloud_auto_paper/activitylogs_txt/202103/IS'
+    txt_path = 'C:/Lcloud_auto_paper/activitylogs_txt/202103/global_mgt-ext-backup'
     txt_controller(txt_path)
     # one_time_fullbackup_dict = txt_controller(txt_path)
     # xlsx_controller(one_time_fullbackup_dict)
