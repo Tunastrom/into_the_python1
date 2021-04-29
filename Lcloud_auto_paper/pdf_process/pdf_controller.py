@@ -1,5 +1,6 @@
 import PyPDF2
 import os
+import copy
 
 
 def pdf_controller():
