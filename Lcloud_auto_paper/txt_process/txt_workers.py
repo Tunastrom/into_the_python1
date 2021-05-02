@@ -41,7 +41,7 @@ def pre_processor(PATH, SPLIT_SET, DELETE_SET):
     # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
     print('<백업 로그 내 불필요 값 제거>')
     backuplog_dict = list_split_into_dict(contents_list)
-    print(backuplog_dict)
+    # print(backuplog_dict)
     return backuplog_dict
 
 # 들어온 문자열의 내용 중에서 함께 가져온 정규표현식으로 검색되는 부분들의 공백제거후 string으로 반환
@@ -69,9 +69,9 @@ def list_split_into_dict(string_list):
         splited_element = element.split(' ')
         row_dict = {}
         j = 0
-        for word in splited_element:
-            if word != '':
-                row_dict[j] = word
+        for alphatbet in splited_element:
+            if alphatbet != '':
+                row_dict[j] = alphatbet
                 j += 1
         backuplog_dict[i] = row_dict
         now_count = string_list.index(element) + 1
@@ -152,6 +152,10 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES
 
 # 정책명에 tran, arc, inc 포함되어 있는지, file backup일 경우 schedule명에 'full' 있는 지 까지 체크
 def policy_checker(*args):
+    """
+    :param args: [0]:RUBBISIES_SET,  [1]:row_dict[kilobytes_index], [2]:row_dict[policy_index],  [3]row_dict[schedule_index]
+    :return: bool
+    """
     rubbish = False
     # Kilobytes 행에 백업용량이 아닌 다른 값이 들어왔을 때 해당 job 걸러내기
     try:
@@ -162,7 +166,7 @@ def policy_checker(*args):
     if len(args) == 3:
         # schedule 이름이 Default-Application-Backup일때 policy name에 tran, inc, arc 들어간 것 찾아내 해당 job 걸러내기
         for search_this in args[0]:
-            if args[2].lower().find(search_this) == -1:
+            if args[2].lower().find(search_this) != -1:
                 rubbish = True
                 return rubbish
     elif len(args) == 4:
@@ -195,9 +199,8 @@ def current_selector(fullbackups_list, policynames_list):
                 # 2021.04.03 꼴의 날짜 값 search_result에 할당
                 date_str = row[start_time_index]
                 # 2021, 04, 03 꼴의 년, 월, 일값 각각 year, month, day에 할당
-                print(f'{policyname}')
                 year, month, day = date_separator(date_str)
-                print ('year, month, day: {}, {}, {}'.format(year, month, day))
+                # print ('year, month, day: {}, {}, {}'.format(year, month, day))
                 if year == 0 or month == 0 or day == 0:
                     continue
                 # 첫번째 StartTime currenttime_date으로 할당
@@ -255,7 +258,6 @@ def current_selector(fullbackups_list, policynames_list):
 
 # xxxx특문xx특문xx 형태로 저장된 날짜를 year = xxxx, month = xx, day= xx 형태로 변환
 def date_separator(date_str):
-    print(f'date: {date_str}')
     pattern = '\d+'
     r = re.compile(pattern)
     year, month, day = 0, 0, 0
