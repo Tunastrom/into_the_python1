@@ -1,6 +1,5 @@
 from txt_process.txt_workers import *
 
-
 def txt_controller(PATHDIR,TXTPATH):
 
     PATH = PATHDIR+TXTPATH
