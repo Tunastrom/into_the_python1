@@ -1,6 +1,9 @@
 
 
-text = 'lpdaprdb_mssql_tran'
+test_list = [100, 200, 0, 200]
 
-for i in ['tran', 'inc', 'arc', 'mssql']:
-    print(text.find(i))
+for i in range(len(test_list)):
+    try:                          #start  #end
+        print(test_list.index(200,   i,   i+1))
+    except:
+        continue

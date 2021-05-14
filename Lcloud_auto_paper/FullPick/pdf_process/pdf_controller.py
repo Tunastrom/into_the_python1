@@ -1,7 +1,6 @@
-from PyPDF2 import PdfFileReader, PdfFileWriter
+# from PyPDF2 import PdfFileReader, PdfFileWriter
 import os
 import copy
-
 
 def pdf_controller():
     dir_path = 'C:/Lcloud_auto_paper/maintenence_pdf/202104/'

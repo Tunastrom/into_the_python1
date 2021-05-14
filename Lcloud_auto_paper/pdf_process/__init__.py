@@ -1,1 +1,0 @@
-from pdf_process.pdf_controller import pdf_controller

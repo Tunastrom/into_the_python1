@@ -1,4 +1,4 @@
-from txt_process.txt_workers import *
+from .txt_workers import *
 
 def txt_controller(PATHDIR,TXTPATH):
 

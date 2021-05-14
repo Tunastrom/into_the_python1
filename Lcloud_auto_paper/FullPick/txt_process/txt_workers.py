@@ -1,91 +1,43 @@
-__all__ = ['pre_processor', 'string_splitter', 'list_split_into_dict', 'full_selector', 'policy_checker', 'current_selector', 'date_separator', 'make_summary_txt']
+__all__ = ['pre_processor', 'string_splitter', 'row_list_split_into_dict', 'full_selector', 'policy_checker', 'current_selector', 'date_separator', 'make_summary_txt']
 
 import re
-import math
 import datetime
-
+from FullPick.common import percent_printer, string_splitter, date_separator, row_list_split_into_dict
 
 """ Activity Monitor txt 파일 처리하는 메소드들 """
 def pre_processor(PATH, SPLIT_SET, DELETE_SET):
     print('=============================================전 처리 시작===================================================')
     # 전체 내용에서 단어 사이의 띄어쓰기 제거 및 값 없는 컬럼의 이름 삭제
-    contents_str = ''
+    contents_str, switch, checker, date_pattern = '', False, 'date_split', '\d+[.][ ]\d+[.][ ]\d+[ ]+\D+[ ]\d+[:]\d+[:]\d+'
     with open(PATH, 'r') as f:
         contents_list = f.readlines()
-        # start time 과 end time 공백제거
-        date_pattern = '\d+[.][ ]\d+[.][ ]\d+[ ]+\D+[ ]\d+[:]\d+[:]\d+'
-        print('<날짜 공백 제거 시작>')
-        switch = False
-        for line in contents_list:
-            try:
-                # 날짜 공백 제거함수 수행 후 결과 새로운 문자열에 추가
-                contents_str += string_splitter(date_pattern, line)
-            except AttributeError:
-                contents_str += line
-            # 날짜 공백 제거 진행률 표현
-            percent = round((contents_list.index(line) / len(contents_list)) * 100)
-            if percent % 10 == 0 and switch is True:
-                print('날짜 공백 제거 {}% 완료'.format(percent))
-                switch = False
-            elif percent % 10 > 0:
-                switch = True
-        print('<컬럼 이름, 값 중간의 공백 제거>')
-        for name in SPLIT_SET:
-            splited_name = name.split(' ')
-            contents_str = contents_str.replace(name, ''.join(splited_name))
-        print('<불필요한 컬럼 이름 삭제>')
-        for name in DELETE_SET:
-            contents_str = contents_str.replace(name, '')
-        # 전체 내용을 \n을 기준으로 나누어 각 행을 요소로 갖는 리스트 만들기
-        contents_list = contents_str.split('\n')
-        # 불필요한 행 삭제
-        del contents_list[0:7]
-        del contents_list[1]
+    # start time 과 end time 공백제거
+    print('<날짜 공백 제거 시작>')
+    for line in contents_list:
+        try:
+            # 날짜 공백 제거함수 수행 후 결과 새로운 문자열에 추가
+            contents_str += string_splitter(date_pattern, line)
+        except AttributeError:
+            contents_str += line
+        # 날짜 공백 제거 진행률 표현
+        percent = round((contents_list.index(line) / len(contents_list)) * 100)
+        switch = percent_printer(percent, switch, checker)
+    print('<컬럼 이름, 값 중간의 공백 제거>')
+    for name in SPLIT_SET:
+        splited_name = name.split(' ')
+        contents_str = contents_str.replace(name, ''.join(splited_name))
+    print('<불필요한 컬럼 이름 삭제>')
+    for name in DELETE_SET:
+        contents_str = contents_str.replace(name, '')
+    # 전체 내용을 \n을 기준으로 나누어 각 행을 요소로 갖는 리스트 만들기
+    contents_list = contents_str.split('\n')
+    # 불필요한 행 삭제
+    del contents_list[0:7]
+    del contents_list[1]
     # 1개 행씩(row_dict) 읽어 공백제거 및 Backup_Log_dict에 요소로 추가
     print('<백업 로그 내 불필요 값 제거>')
-    backuplog_dict = list_split_into_dict(contents_list)
+    backuplog_dict = row_list_split_into_dict(contents_list)
     # print(backuplog_dict)
-    return backuplog_dict
-
-# 들어온 문자열의 내용 중에서 함께 가져온 정규표현식으로 검색되는 부분들의 공백제거후 string으로 반환
-def string_splitter(pattern, string):
-    split_str = string
-    r = re.compile(pattern)
-    search_result = r.search(split_str).group()
-    while search_result:
-        replaced_result = search_result.replace(' ', '')
-        split_str = split_str.replace(search_result, replaced_result)
-        try:
-            search_result = r.search(split_str).group()
-        except:
-            # 정규표현식으로 검색되는 결과 없음.
-            search_result = False
-    return split_str
-
-# 들어온 문자열 리스트의 요소를 공백제거 및 공백제거후 발생하는 ''요소들 제거후 dictionary형태로 반환
-def list_split_into_dict(string_list):
-    backuplog_dict = {}
-    i = 0
-    switch = bool
-    # 요소들 꺼내오기
-    for element in string_list:
-        splited_element = element.split(' ')
-        row_dict = {}
-        j = 0
-        for alphatbet in splited_element:
-            if alphatbet != '':
-                row_dict[j] = alphatbet
-                j += 1
-        backuplog_dict[i] = row_dict
-        now_count = string_list.index(element) + 1
-        total_count = len(string_list)
-        now_percent = math.floor((now_count / total_count) * 100)
-        if now_percent % 10 == 0 and switch is True:
-            print('백업 로그 내 불필요 값 제거 진행률 {}%'.format(now_percent))
-            switch = False
-        elif now_percent % 10 > 0:
-            switch = True
-        i += 1
     return backuplog_dict
 
 
@@ -215,7 +167,6 @@ def current_selector(fullbackups_list, policynames_list):
                 if comparingtime_date > currenttime_date:
                     currenttime_date = comparingtime_date
         timeandamount_dict.setdefault('Date', currenttime_date)
-        print(currenttime_date)
         print(f'current_start: {timeandamount_dict["Date"]}')
         one_time_fullbackup_dict[policyname] = timeandamount_dict
         # 마지막 full backup 수행일자의 백업용량 계산
@@ -252,43 +203,17 @@ def current_selector(fullbackups_list, policynames_list):
         # 현재 작업중인 정책의 최신날짜 기준 백업용량이 1기가 미만이라면 1기가로 올려서 저장
         if 0 <= gigabyte and gigabyte < 1:
              gigabyte = 1
-        one_time_fullbackup_dict[policyname]['Gigabyte'] = gigabyte
+        one_time_fullbackup_dict[policyname]['Gigabyte'] += gigabyte
     # 결과 프린트(확인용)
     print('===============================================1회 full backup 계산 완료!=====================================================')
     for i in one_time_fullbackup_dict.items():
         print(i)
     return one_time_fullbackup_dict
 
-# xxxx특문xx특문xx 형태로 저장된 날짜를 year = xxxx, month = xx, day= xx 형태로 변환
-def date_separator(date_str):
-    pattern = '\d+'
-    r = re.compile(pattern)
-    year, month, day = 0, 0, 0
-    try:
-        for i in range(len(date_str)):
-            if year != 0 and month != 0 and day != 0:
-                break
-            search_result = r.search(date_str).group()
-            if i == 0:
-                year = int(search_result)
-                date_str = date_str.replace(search_result, '')
-            if i == 1:
-                month = int(search_result)
-                date_str = date_str.replace('.{}.'.format(search_result), '')
-            if i == 2:
-                day = int(search_result)
-                date_str = date_str.replace(search_result, '')
-    except:
-        year, month, day = 0, 0, 0
-    return year, month, day
-
 # 완성된 정책별 최신 풀백업 수행날짜 및 풀백업 용량을 .txt 파일로 저장
 def make_summary_txt(TXTPATH, one_time_fullbackup_dict):
-    write_list = []
-    for key, value in one_time_fullbackup_dict.items():
-        write_list.append(f'{key}:{value}')
-    with open (TXTPATH+'_summary.txt', 'w') as f:
-        for line in write_list:
+    with open (TXTPATH.replace('.txt','')+'_summary.txt', 'w') as f:
+        for line in one_time_fullbackup_dict.items():
            f.write(str(line))
            f.write('\n')
     print('<'+TXTPATH+'_summary.txt 파일이 생성되었습니다!>')
