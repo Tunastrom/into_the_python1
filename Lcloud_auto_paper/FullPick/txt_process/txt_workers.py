@@ -100,8 +100,8 @@ def full_selector(backuplog_dict,NEEDCOLUMNS_DICT, NEEDCONDITIONS_SET, RUBBISIES
                     NEEDCOLUMNS_DICT.update({''+v:k})
             fullbackups_list.append(NEEDCOLUMNS_DICT)
     fullbackups_list[0] = fullindexs_dict
-    # for line in fullbackups_list:
-    #      print(f'<fullbackups_list> {line}')
+    for line in fullbackups_list:
+         print(f'<fullbackups_list> {line}')
     return fullbackups_list, list(policynames_set)
 
 
@@ -166,7 +166,10 @@ def current_selector(fullbackups_list, policynames_list):
                 comparingtime_date = datetime.date(year, month, day)
                 if comparingtime_date > currenttime_date:
                     currenttime_date = comparingtime_date
+
         timeandamount_dict.setdefault('Date', currenttime_date)
+        timeandamount_dict.setdefault('Gigabyte', 0)
+
         print(f'current_start: {timeandamount_dict["Date"]}')
         one_time_fullbackup_dict[policyname] = timeandamount_dict
         # 마지막 full backup 수행일자의 백업용량 계산
