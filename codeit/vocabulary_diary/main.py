@@ -1,6 +1,3 @@
-import os
-
-
 def str_into_txt():
     eng = input('영어 단어를 입력하세요: ')
     if(eng == 'q'):
