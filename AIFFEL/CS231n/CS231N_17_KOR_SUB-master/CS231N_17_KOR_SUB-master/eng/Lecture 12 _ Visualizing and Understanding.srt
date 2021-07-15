@@ -1,0 +1,4684 @@
+﻿1
+00:00:10,512 --> 00:00:15,376
+- Good morning.
+So, it's 12:03 so, I want to get started.
+
+2
+00:00:15,376 --> 00:00:18,014
+Welcome to Lecture 12, of CS-231N.
+
+3
+00:00:18,014 --> 00:00:21,840
+Today we are going to talk about Visualizing
+and Understanding convolutional networks.
+
+4
+00:00:21,840 --> 00:00:25,270
+This is always a super fun lecture to give
+because we get to look a lot of pretty pictures.
+
+5
+00:00:25,270 --> 00:00:28,375
+So, it's, it's one of my favorites.
+
+6
+00:00:28,375 --> 00:00:30,354
+As usual a couple administrative things.
+
+7
+00:00:30,354 --> 00:00:39,544
+So, hopefully your projects are all going well, because as a reminder your milestones
+are due on Canvas tonight. It is Canvas, right? Okay, so want to double check, yeah.
+
+8
+00:00:39,545 --> 00:00:43,590
+Due on Canvas tonight, we are working on
+furiously grading your midterms.
+
+9
+00:00:43,590 --> 00:00:49,537
+So, we'll hope to have those midterms grades
+to you back by on grade scope this week.
+
+10
+00:00:49,537 --> 00:00:54,987
+So, I know that was little confusion, you all got registration
+email's for grade scope probably in the last week.
+
+11
+00:00:54,988 --> 00:00:57,372
+Something like that, we start
+couple of questions on piazo.
+
+12
+00:00:57,372 --> 00:00:59,530
+So, we've decided to use grade
+scope to grade the midterms.
+
+13
+00:00:59,530 --> 00:01:02,973
+So, don't be confused, if you
+get some emails about that.
+
+14
+00:01:02,973 --> 00:01:05,047
+Another reminder is that assignment three
+
+15
+00:01:05,047 --> 00:01:07,412
+was released last week on Friday.
+
+16
+00:01:07,412 --> 00:01:11,088
+It will be due, a week from
+this Friday, on the 26th.
+
+17
+00:01:11,088 --> 00:01:12,595
+This is, an assignment three,
+
+18
+00:01:12,595 --> 00:01:14,444
+is almost entirely brand new this year.
+
+19
+00:01:14,444 --> 00:01:17,152
+So, it we apologize for taking
+a little bit longer than
+
+20
+00:01:17,152 --> 00:01:18,847
+expected to get it out.
+
+21
+00:01:18,847 --> 00:01:20,272
+But I think it's super cool.
+
+22
+00:01:20,272 --> 00:01:22,644
+A lot of that stuff, we'll
+talk about in today's lecture.
+
+23
+00:01:22,644 --> 00:01:25,283
+You'll actually be implementing
+on your assignment.
+
+24
+00:01:25,283 --> 00:01:27,188
+And for the assignment, you'll
+get the choice of either
+
+25
+00:01:27,188 --> 00:01:29,575
+Pi torch or tensure flow.
+
+26
+00:01:29,575 --> 00:01:30,921
+To work through these different examples.
+
+27
+00:01:30,921 --> 00:01:34,512
+So, we hope that's really
+useful experience for you guys.
+
+28
+00:01:34,512 --> 00:01:35,822
+We also saw a lot of activity
+
+29
+00:01:35,822 --> 00:01:37,273
+on HyperQuest over the weekend.
+
+30
+00:01:37,273 --> 00:01:39,084
+So that's, that's really awesome.
+
+31
+00:01:39,084 --> 00:01:40,549
+The leader board went up yesterday.
+
+32
+00:01:40,549 --> 00:01:42,568
+It seems like you guys are
+really trying to battle it out
+
+33
+00:01:42,568 --> 00:01:44,227
+to show off your deep learning
+
+34
+00:01:44,227 --> 00:01:46,063
+neural network training skills.
+
+35
+00:01:46,063 --> 00:01:47,402
+So that's super cool.
+
+36
+00:01:47,402 --> 00:01:50,087
+And we because due to the high interest
+
+37
+00:01:50,087 --> 00:01:52,811
+in HyperQuest and due to
+the conflicts with the,
+
+38
+00:01:52,811 --> 00:01:55,118
+with the Milestones submission time.
+
+39
+00:01:55,118 --> 00:01:56,808
+We decided to extend the deadline
+
+40
+00:01:56,808 --> 00:01:58,591
+for extra credit through Sunday.
+
+41
+00:01:58,591 --> 00:02:02,279
+So, anyone who does at
+least 12 runs on HyperQuest
+
+42
+00:02:02,279 --> 00:02:04,773
+by Sunday will get little bit
+of extra credit in the class.
+
+43
+00:02:04,773 --> 00:02:07,394
+Also those of you who are,
+at the top of leader board
+
+44
+00:02:07,394 --> 00:02:09,175
+doing really well, will
+get may be little bit
+
+45
+00:02:09,175 --> 00:02:11,200
+extra, extra credit.
+
+46
+00:02:11,200 --> 00:02:13,081
+So, I thanks for
+participating we got lot of
+
+47
+00:02:13,081 --> 00:02:15,935
+interest and that was really cool.
+
+48
+00:02:15,935 --> 00:02:17,844
+Final reminder is about
+the poster session.
+
+49
+00:02:17,844 --> 00:02:21,445
+So, we have the poster
+session will be on June 6th.
+
+50
+00:02:21,445 --> 00:02:22,872
+That date is finalized,
+
+51
+00:02:22,872 --> 00:02:24,940
+I think that, I don't
+remember the exact time.
+
+52
+00:02:24,940 --> 00:02:25,932
+But it is June 6th.
+
+53
+00:02:25,932 --> 00:02:27,141
+So that, we have some questions
+
+54
+00:02:27,141 --> 00:02:29,310
+about when exactly that poster session is
+
+55
+00:02:29,310 --> 00:02:30,297
+for those of you who are traveling
+
+56
+00:02:30,297 --> 00:02:31,897
+at the end of quarter
+or starting internships
+
+57
+00:02:31,897 --> 00:02:33,247
+or something like that.
+
+58
+00:02:33,247 --> 00:02:35,497
+So, it will be June 6th.
+
+59
+00:02:35,497 --> 00:02:37,210
+Any questions on the admin notes.
+
+60
+00:02:39,241 --> 00:02:41,171
+No, totally clear.
+
+61
+00:02:41,171 --> 00:02:42,578
+So, last time we talked.
+
+62
+00:02:42,578 --> 00:02:44,254
+So, last time we had a pretty
+
+63
+00:02:44,254 --> 00:02:46,259
+jam packed lecture, when we
+talked about lot of different
+
+64
+00:02:46,259 --> 00:02:48,161
+computer vision tasks, as a reminder.
+
+65
+00:02:48,161 --> 00:02:49,955
+We talked about semantic segmentation
+
+66
+00:02:49,955 --> 00:02:52,035
+which is this problem, where
+you want to sign labels
+
+67
+00:02:52,035 --> 00:02:54,318
+to every pixel in the input image.
+
+68
+00:02:54,318 --> 00:02:56,131
+But does not differentiate the
+
+69
+00:02:56,131 --> 00:02:58,225
+object instances in those images.
+
+70
+00:02:58,225 --> 00:03:00,773
+We talked about classification
+plus localization.
+
+71
+00:03:00,773 --> 00:03:02,558
+Where in addition to a class label
+
+72
+00:03:02,558 --> 00:03:04,059
+you also want to draw a box
+
+73
+00:03:04,059 --> 00:03:06,539
+or perhaps several boxes in the image.
+
+74
+00:03:06,539 --> 00:03:08,041
+Where the distinction here is that,
+
+75
+00:03:08,041 --> 00:03:10,130
+in a classification
+plus localization setup.
+
+76
+00:03:10,130 --> 00:03:12,594
+You have some fix number of
+objects that you are looking for
+
+77
+00:03:12,594 --> 00:03:14,424
+So, we also saw that this type of paradigm
+
+78
+00:03:14,424 --> 00:03:16,785
+can be applied to the things
+like pose recognition.
+
+79
+00:03:16,785 --> 00:03:18,836
+Where you want to regress to
+different numbers of joints
+
+80
+00:03:18,836 --> 00:03:20,222
+in the human body.
+
+81
+00:03:20,222 --> 00:03:22,235
+We also talked about the object detection
+
+82
+00:03:22,235 --> 00:03:23,976
+where you start with some fixed
+
+83
+00:03:23,976 --> 00:03:25,851
+set of category labels
+that you are interested in.
+
+84
+00:03:25,851 --> 00:03:27,102
+Like dogs and cats.
+
+85
+00:03:27,102 --> 00:03:29,460
+And then the task is
+to draw a boxes around
+
+86
+00:03:29,460 --> 00:03:31,196
+every instance of those objects
+
+87
+00:03:31,196 --> 00:03:32,769
+that appear in the input image.
+
+88
+00:03:32,769 --> 00:03:35,303
+And object detection
+is really distinct from
+
+89
+00:03:35,303 --> 00:03:37,063
+classification plus localization
+
+90
+00:03:37,063 --> 00:03:38,783
+because with object
+detection, we don't know
+
+91
+00:03:38,783 --> 00:03:40,629
+ahead of time, how many object instances
+
+92
+00:03:40,629 --> 00:03:42,298
+we're looking for in the image.
+
+93
+00:03:42,298 --> 00:03:44,272
+And we saw that there's
+this whole family of methods
+
+94
+00:03:44,272 --> 00:03:48,100
+based on RCNN, Fast RCNN and faster RCNN,
+
+95
+00:03:48,100 --> 00:03:49,916
+as well as the single
+shot detection methods
+
+96
+00:03:49,916 --> 00:03:52,588
+for addressing this problem
+of object detection.
+
+97
+00:03:52,588 --> 00:03:55,026
+Then finally we talked
+pretty briefly about
+
+98
+00:03:55,026 --> 00:03:57,722
+instance segmentation,
+which is kind of combining
+
+99
+00:03:57,722 --> 00:04:01,164
+aspects of a semantic
+segmentation and object detection
+
+100
+00:04:01,164 --> 00:04:03,308
+where the goal is to
+detect all the instances
+
+101
+00:04:03,308 --> 00:04:04,934
+of the categories we care about,
+
+102
+00:04:04,934 --> 00:04:07,997
+as well as label the pixels
+belonging to each instance.
+
+103
+00:04:07,997 --> 00:04:11,339
+So, in this case, we
+detected two dogs and one cat
+
+104
+00:04:11,339 --> 00:04:13,093
+and for each of those instances we wanted
+
+105
+00:04:13,093 --> 00:04:14,887
+to label all the pixels.
+
+106
+00:04:14,887 --> 00:04:17,437
+So, these are we kind of
+covered a lot last lecture
+
+107
+00:04:17,437 --> 00:04:19,509
+but those are really interesting
+and exciting problems
+
+108
+00:04:19,509 --> 00:04:21,284
+that you guys might consider to
+
+109
+00:04:21,284 --> 00:04:23,810
+using in parts of your projects.
+
+110
+00:04:23,810 --> 00:04:25,645
+But today we are going to
+shift gears a little bit
+
+111
+00:04:25,645 --> 00:04:27,081
+and ask another question.
+
+112
+00:04:27,081 --> 00:04:28,702
+Which is, what's really going on
+
+113
+00:04:28,702 --> 00:04:30,578
+inside convolutional networks.
+
+114
+00:04:30,578 --> 00:04:32,445
+We've seen by this point in the class
+
+115
+00:04:32,445 --> 00:04:34,120
+how to train convolutional networks.
+
+116
+00:04:34,120 --> 00:04:35,916
+How to stitch up different
+types of architectures
+
+117
+00:04:35,916 --> 00:04:37,503
+to attack different problems.
+
+118
+00:04:37,503 --> 00:04:39,860
+But one question that you
+might have had in your mind,
+
+119
+00:04:39,860 --> 00:04:42,653
+is what exactly is going
+on inside these networks?
+
+120
+00:04:42,653 --> 00:04:44,081
+How did they do the things that they do?
+
+121
+00:04:44,081 --> 00:04:46,444
+What kinds of features
+are they looking for?
+
+122
+00:04:46,444 --> 00:04:48,612
+And all this source of related questions.
+
+123
+00:04:48,612 --> 00:04:51,043
+So, so far we've sort of seen
+
+124
+00:04:51,043 --> 00:04:53,399
+ConvNets as a little bit of a black box.
+
+125
+00:04:53,399 --> 00:04:55,635
+Where some input image of raw pixels
+
+126
+00:04:55,635 --> 00:04:57,100
+is coming in on one side.
+
+127
+00:04:57,100 --> 00:04:58,816
+It goes to the many layers of convulsion
+
+128
+00:04:58,816 --> 00:05:01,170
+and pooling in different
+sorts of transformations.
+
+129
+00:05:01,170 --> 00:05:04,547
+And on the outside, we end up
+with some set of class scores
+
+130
+00:05:04,547 --> 00:05:07,363
+or some types of understandable
+interpretable output.
+
+131
+00:05:07,363 --> 00:05:09,865
+Such as class scores or
+bounding box positions
+
+132
+00:05:09,865 --> 00:05:12,342
+or labeled pixels or something like that.
+
+133
+00:05:12,342 --> 00:05:13,307
+But the question is.
+
+134
+00:05:13,307 --> 00:05:15,933
+What are all these other
+layers in the middle doing?
+
+135
+00:05:15,933 --> 00:05:17,685
+What kinds of things in the input image
+
+136
+00:05:17,685 --> 00:05:18,567
+are they looking for?
+
+137
+00:05:18,567 --> 00:05:20,857
+And can we try again intuition for.
+
+138
+00:05:20,857 --> 00:05:22,023
+How ConvNets are working?
+
+139
+00:05:22,023 --> 00:05:24,364
+What types of things in the
+image they are looking for?
+
+140
+00:05:24,364 --> 00:05:25,867
+And what kinds of techniques do we have
+
+141
+00:05:25,867 --> 00:05:29,327
+for analyzing this
+internals of the network?
+
+142
+00:05:29,327 --> 00:05:32,667
+So, one relatively simple
+thing is the first layer.
+
+143
+00:05:32,667 --> 00:05:34,522
+So, we've seen, we've
+talked about this before.
+
+144
+00:05:34,522 --> 00:05:37,508
+But recalled that, the
+first convolutional layer
+
+145
+00:05:37,508 --> 00:05:39,819
+consists of a filters that,
+
+146
+00:05:39,819 --> 00:05:41,492
+so, for example in AlexNet.
+
+147
+00:05:41,492 --> 00:05:43,262
+The first convolutional layer consists
+
+148
+00:05:43,262 --> 00:05:45,193
+of a number of convolutional filters.
+
+149
+00:05:45,193 --> 00:05:49,230
+Each convolutional of filter
+has shape 3 by 11 by 11.
+
+150
+00:05:49,230 --> 00:05:51,228
+And these convolutional filters gets slid
+
+151
+00:05:51,228 --> 00:05:52,268
+over the input image.
+
+152
+00:05:52,268 --> 00:05:54,947
+We take inner products between
+some chunk of the image.
+
+153
+00:05:54,947 --> 00:05:56,909
+And the weights of the
+convolutional filter.
+
+154
+00:05:56,909 --> 00:05:58,689
+And that gives us our output of the
+
+155
+00:05:58,689 --> 00:06:01,729
+at, at after that first
+convolutional layer.
+
+156
+00:06:01,729 --> 00:06:05,074
+So, in AlexNet then we
+have 64 of these filters.
+
+157
+00:06:05,074 --> 00:06:06,947
+But now in the first layer
+because we are taking
+
+158
+00:06:06,947 --> 00:06:08,780
+in a direct inner product
+between the weights
+
+159
+00:06:08,780 --> 00:06:10,175
+of the convolutional layer
+
+160
+00:06:10,175 --> 00:06:11,682
+and the pixels of the image.
+
+161
+00:06:11,682 --> 00:06:14,548
+We can get some since for what
+these filters are looking for
+
+162
+00:06:14,548 --> 00:06:17,697
+by simply visualizing the
+learned weights of these filters
+
+163
+00:06:17,697 --> 00:06:19,458
+as images themselves.
+
+164
+00:06:19,458 --> 00:06:22,576
+So, for each of those
+11 by 11 by 3 filters
+
+165
+00:06:22,576 --> 00:06:25,027
+in AlexNet, we can just
+visualize that filter
+
+166
+00:06:25,027 --> 00:06:28,461
+as a little 11 by 11 image
+with a three channels
+
+167
+00:06:28,461 --> 00:06:30,201
+give you the red, green and blue values.
+
+168
+00:06:30,201 --> 00:06:32,051
+And then because there
+are 64 of these filters
+
+169
+00:06:32,051 --> 00:06:35,305
+we just visualize 64
+little 11 by 11 images.
+
+170
+00:06:35,305 --> 00:06:38,047
+And we can repeat... So
+we have shown here at the.
+
+171
+00:06:38,047 --> 00:06:40,982
+So, these are filters taken
+from the prechain models,
+
+172
+00:06:40,982 --> 00:06:42,509
+in the pi torch model zoo.
+
+173
+00:06:42,509 --> 00:06:44,739
+And we are looking at the
+convolutional filters.
+
+174
+00:06:44,739 --> 00:06:45,985
+The weights of the convolutional filters.
+
+175
+00:06:45,985 --> 00:06:48,313
+at the first layer of AlexNet, ResNet-18,
+
+176
+00:06:48,313 --> 00:06:51,065
+ResNet-101 and DenseNet-121.
+
+177
+00:06:51,065 --> 00:06:53,753
+And you can see, kind
+of what all these layers
+
+178
+00:06:53,753 --> 00:06:55,553
+what this filters looking for.
+
+179
+00:06:55,553 --> 00:06:59,015
+You see the lot of things
+looking for oriented edges.
+
+180
+00:06:59,015 --> 00:07:01,052
+Likes bars of light and dark.
+
+181
+00:07:01,052 --> 00:07:04,487
+At various angles, in various
+angles and various positions
+
+182
+00:07:04,487 --> 00:07:07,200
+in the input, we can see opposing colors.
+
+183
+00:07:07,200 --> 00:07:09,475
+Like this are green and pink.
+
+184
+00:07:09,475 --> 00:07:12,732
+opposing colors or this orange
+and blue opposing colors.
+
+185
+00:07:12,732 --> 00:07:14,893
+So, this, this kind of
+connects back to what we
+
+186
+00:07:14,893 --> 00:07:16,221
+talked about with Hugh and Wiesel.
+
+187
+00:07:16,221 --> 00:07:17,907
+All the way in the first lecture.
+
+188
+00:07:17,907 --> 00:07:19,716
+That remember the human visual system
+
+189
+00:07:19,716 --> 00:07:22,271
+is known to the detect
+things like oriented edges.
+
+190
+00:07:22,271 --> 00:07:24,978
+At the very early layers
+of the human visual system.
+
+191
+00:07:24,978 --> 00:07:26,946
+And it turns out of that
+these convolutional networks
+
+192
+00:07:26,946 --> 00:07:29,136
+tend to do something, somewhat similar.
+
+193
+00:07:29,136 --> 00:07:31,566
+At their first convolutional
+layers as well.
+
+194
+00:07:31,566 --> 00:07:33,153
+And what's kind of interesting is that
+
+195
+00:07:33,153 --> 00:07:35,631
+pretty much no matter what type
+of architecture you hook up
+
+196
+00:07:35,631 --> 00:07:37,920
+or whatever type of training
+data you are train it on.
+
+197
+00:07:37,920 --> 00:07:40,594
+You almost always get
+the first layers of your.
+
+198
+00:07:40,594 --> 00:07:42,736
+The first convolutional
+weights of any pretty much
+
+199
+00:07:42,736 --> 00:07:44,990
+any convolutional network
+looking at images.
+
+200
+00:07:44,990 --> 00:07:46,389
+Ends up looking something like this
+
+201
+00:07:46,389 --> 00:07:48,676
+with oriented edges and opposing colors.
+
+202
+00:07:48,676 --> 00:07:51,539
+Looking at that input image.
+
+203
+00:07:51,539 --> 00:07:53,696
+But this really only, sorry
+what was that question?
+
+204
+00:08:04,215 --> 00:08:06,118
+Yes, these are showing the learned weights
+
+205
+00:08:06,118 --> 00:08:07,592
+of the first convolutional layer.
+
+206
+00:08:15,766 --> 00:08:16,826
+Oh, so that the question is.
+
+207
+00:08:16,826 --> 00:08:18,998
+Why does visualizing the
+weights of the filters?
+
+208
+00:08:18,998 --> 00:08:21,318
+Tell you what the filter is looking for.
+
+209
+00:08:21,318 --> 00:08:23,945
+So this intuition comes from
+sort of template matching
+
+210
+00:08:23,945 --> 00:08:25,045
+and inner products.
+
+211
+00:08:25,045 --> 00:08:28,389
+That if you imagine you have
+some, some template vector.
+
+212
+00:08:28,389 --> 00:08:31,125
+And then you imagine you
+compute a scaler output
+
+213
+00:08:31,125 --> 00:08:33,272
+by taking inner product
+between your template vector
+
+214
+00:08:33,272 --> 00:08:35,044
+and some arbitrary piece of data.
+
+215
+00:08:35,044 --> 00:08:38,321
+Then, the input which
+maximizes that activation.
+
+216
+00:08:38,321 --> 00:08:40,289
+Under a norm constraint on the input
+
+217
+00:08:40,289 --> 00:08:43,062
+is exactly when those
+two vectors match up.
+
+218
+00:08:43,062 --> 00:08:45,564
+So, in that since that,
+when, whenever you're taking
+
+219
+00:08:45,564 --> 00:08:48,066
+inner products, the thing
+causes an inner product
+
+220
+00:08:48,066 --> 00:08:49,736
+to excite maximally
+
+221
+00:08:49,736 --> 00:08:52,506
+is a copy of the thing you are
+taking an inner product with.
+
+222
+00:08:52,506 --> 00:08:55,060
+So, that, that's why we can
+actually visualize these weights
+
+223
+00:08:55,060 --> 00:08:56,323
+and that, why that shows us,
+
+224
+00:08:56,323 --> 00:08:57,902
+what this first layer is looking for.
+
+225
+00:09:06,008 --> 00:09:08,731
+So, for these networks
+the first layers always
+
+226
+00:09:08,731 --> 00:09:10,052
+was a convolutional layer.
+
+227
+00:09:10,052 --> 00:09:12,003
+So, generally whenever
+you are looking at image.
+
+228
+00:09:12,003 --> 00:09:13,808
+Whenever you are thinking about image data
+
+229
+00:09:13,808 --> 00:09:15,174
+and training convolutional networks,
+
+230
+00:09:15,174 --> 00:09:16,525
+you generally put a convolutional layer
+
+231
+00:09:16,525 --> 00:09:18,178
+at the first, at the first stop.
+
+232
+00:09:28,086 --> 00:09:29,006
+Yeah, so the question is,
+
+233
+00:09:29,006 --> 00:09:30,665
+can we do this same type of procedure
+
+234
+00:09:30,665 --> 00:09:32,118
+in the middle open network.
+
+235
+00:09:32,118 --> 00:09:33,202
+That's actually the next slide.
+
+236
+00:09:33,202 --> 00:09:35,104
+So, good anticipation.
+
+237
+00:09:35,104 --> 00:09:37,123
+So, if we do, if we draw this exact same
+
+238
+00:09:37,123 --> 00:09:39,767
+visualization for the
+intermediate convolutional layers.
+
+239
+00:09:39,767 --> 00:09:41,753
+It's actually a lot less interpretable.
+
+240
+00:09:41,753 --> 00:09:45,081
+So, this is, this is performing
+exact same visualization.
+
+241
+00:09:45,081 --> 00:09:49,278
+So, remember for this using
+the tiny ConvNets demo network
+
+242
+00:09:49,278 --> 00:09:50,474
+that's running on the course website
+
+243
+00:09:50,474 --> 00:09:51,890
+whenever you go there.
+
+244
+00:09:51,890 --> 00:09:52,702
+So, for that network,
+
+245
+00:09:52,702 --> 00:09:55,987
+the first layer is 7 by
+7 convulsion 16 filters.
+
+246
+00:09:55,987 --> 00:09:58,263
+So, after the top visualizing
+the first layer weights
+
+247
+00:09:58,263 --> 00:10:00,842
+for this network just like
+we saw in a previous slide.
+
+248
+00:10:00,842 --> 00:10:02,366
+But now at the second layer weights.
+
+249
+00:10:02,366 --> 00:10:04,491
+After we do a convulsion
+then there's some relu
+
+250
+00:10:04,491 --> 00:10:06,583
+and some other non-linearity perhaps.
+
+251
+00:10:06,583 --> 00:10:08,185
+But the second convolutional layer,
+
+252
+00:10:08,185 --> 00:10:10,629
+now receives the 16 channel input.
+
+253
+00:10:10,629 --> 00:10:15,116
+And does 7 by 7 convulsion
+with 20 convolutional filters.
+
+254
+00:10:15,116 --> 00:10:16,064
+And we've actually,
+
+255
+00:10:16,064 --> 00:10:18,660
+so the problem is that
+you can't really visualize
+
+256
+00:10:18,660 --> 00:10:20,495
+these directly as images.
+
+257
+00:10:20,495 --> 00:10:23,846
+So, you can try, so, here if you
+
+258
+00:10:23,846 --> 00:10:28,547
+this 16 by, so the input is
+this has 16 dimensions in depth.
+
+259
+00:10:28,547 --> 00:10:30,286
+And we have these convolutional filters,
+
+260
+00:10:30,286 --> 00:10:32,542
+each convolutional filter is 7 by 7,
+
+261
+00:10:32,542 --> 00:10:34,388
+and is extending along the full depth
+
+262
+00:10:34,388 --> 00:10:35,759
+so has 16 elements.
+
+263
+00:10:35,759 --> 00:10:38,072
+Then we've 20 such of these
+convolutional filters,
+
+264
+00:10:38,072 --> 00:10:40,924
+that are producing the output
+planes of the next layer.
+
+265
+00:10:40,924 --> 00:10:44,035
+But the problem here is that
+we can't, looking at the,
+
+266
+00:10:44,035 --> 00:10:45,128
+looking directly at the weights
+
+267
+00:10:45,128 --> 00:10:47,498
+of these filters, doesn't
+really tell us much.
+
+268
+00:10:47,498 --> 00:10:49,734
+So, we, that's really done here is that,
+
+269
+00:10:49,734 --> 00:10:53,743
+now for this single 16 by 7
+by 7 convolutional filter.
+
+270
+00:10:53,743 --> 00:10:58,192
+We can spread out those 167
+by 7 planes of the filter
+
+271
+00:10:58,192 --> 00:11:01,782
+into a 167 by 7 grayscale images.
+
+272
+00:11:01,782 --> 00:11:03,284
+So, that's what we've done.
+
+273
+00:11:03,284 --> 00:11:07,095
+Up here, which is these little
+tiny gray scale images here
+
+274
+00:11:07,095 --> 00:11:08,898
+show us what is, what are the weights
+
+275
+00:11:08,898 --> 00:11:11,852
+in one of the convolutional
+filters of the second layer.
+
+276
+00:11:11,852 --> 00:11:14,473
+And now, because there are
+20 outputs from this layer.
+
+277
+00:11:14,473 --> 00:11:17,534
+Then this second convolutional
+layer, has 2o such of these
+
+278
+00:11:17,534 --> 00:11:21,046
+16 by 16 or 16 by 7 by 7 filters.
+
+279
+00:11:21,046 --> 00:11:22,871
+So if we visualize the weights
+
+280
+00:11:22,871 --> 00:11:24,307
+of those convolutional filters
+
+281
+00:11:24,307 --> 00:11:26,709
+as images, you can see that there are some
+
+282
+00:11:26,709 --> 00:11:28,638
+kind of spacial structures here.
+
+283
+00:11:28,638 --> 00:11:30,897
+But it doesn't really
+give you good intuition
+
+284
+00:11:30,897 --> 00:11:32,128
+for what they are looking at.
+
+285
+00:11:32,128 --> 00:11:35,099
+Because these filters are not
+looking, are not connected
+
+286
+00:11:35,099 --> 00:11:36,644
+directly to the input image.
+
+287
+00:11:36,644 --> 00:11:39,493
+Instead recall that the second
+layer convolutional filters
+
+288
+00:11:39,493 --> 00:11:41,851
+are connected to the
+output of the first layer.
+
+289
+00:11:41,851 --> 00:11:44,189
+So, this is giving visualization of,
+
+290
+00:11:44,189 --> 00:11:46,684
+what type of activation
+pattern after the first
+
+291
+00:11:46,684 --> 00:11:49,331
+convulsion, would cause
+the second layer convulsion
+
+292
+00:11:49,331 --> 00:11:50,646
+to maximally activate.
+
+293
+00:11:50,646 --> 00:11:52,423
+But, that's not very interpretable
+
+294
+00:11:52,423 --> 00:11:53,860
+because we don't have a good sense
+
+295
+00:11:53,860 --> 00:11:55,966
+for what those first layer
+convulsions look like
+
+296
+00:11:55,966 --> 00:11:58,490
+in terms of image pixels.
+
+297
+00:11:58,490 --> 00:12:00,893
+So we'll need to develop some
+slightly more fancy technique
+
+298
+00:12:00,893 --> 00:12:02,047
+to get a sense for what is going on
+
+299
+00:12:02,047 --> 00:12:03,556
+in the intermediate layers.
+
+300
+00:12:03,556 --> 00:12:04,819
+Question in the back.
+
+301
+00:12:09,189 --> 00:12:10,489
+Yeah. So the question is that
+
+302
+00:12:10,489 --> 00:12:13,456
+for... all the visualization
+on this on the previous slide.
+
+303
+00:12:13,456 --> 00:12:16,552
+We've had the scale the weights
+to the zero to 255 range.
+
+304
+00:12:16,552 --> 00:12:18,648
+So in practice those
+weights could be unbounded.
+
+305
+00:12:18,648 --> 00:12:19,885
+They could have any range.
+
+306
+00:12:19,885 --> 00:12:22,983
+But to get nice visualizations
+we need to scale those.
+
+307
+00:12:22,983 --> 00:12:24,685
+These visualizations also do not take
+
+308
+00:12:24,685 --> 00:12:26,409
+in to account the bias is in these layers.
+
+309
+00:12:26,409 --> 00:12:28,162
+So you should keep that in mind
+
+310
+00:12:28,162 --> 00:12:30,423
+when and not take these
+HEPS visualizations
+
+311
+00:12:30,423 --> 00:12:31,892
+to, to literally.
+
+312
+00:12:34,180 --> 00:12:35,237
+Now at the last layer
+
+313
+00:12:35,237 --> 00:12:36,733
+remember when we looking at the last layer
+
+314
+00:12:36,733 --> 00:12:38,391
+of convolutional network.
+
+315
+00:12:38,391 --> 00:12:40,698
+We have these maybe 1000 class scores
+
+316
+00:12:40,698 --> 00:12:42,891
+that are telling us what
+are the predicted scores
+
+317
+00:12:42,891 --> 00:12:44,908
+for each of the classes
+in our training data set
+
+318
+00:12:44,908 --> 00:12:46,676
+and immediately before the last layer
+
+319
+00:12:46,676 --> 00:12:48,628
+we often have some fully connected layer.
+
+320
+00:12:48,628 --> 00:12:49,962
+In the case of Alex net
+
+321
+00:12:49,962 --> 00:12:53,039
+we have some 4096- dimensional
+features representation
+
+322
+00:12:53,039 --> 00:12:55,516
+of our image that then
+gets fed into that final
+
+323
+00:12:55,516 --> 00:12:58,328
+our final layer to predict
+our final class scores.
+
+324
+00:12:58,328 --> 00:13:00,606
+And one another, another kind of route
+
+325
+00:13:00,606 --> 00:13:02,787
+for tackling the problem
+of visual, visualizing
+
+326
+00:13:02,787 --> 00:13:04,263
+and understanding ConvNets
+
+327
+00:13:04,263 --> 00:13:06,520
+is to try to understand what's
+happening at the last layer
+
+328
+00:13:06,520 --> 00:13:07,967
+of a convolutional network.
+
+329
+00:13:07,967 --> 00:13:09,022
+So what we can do
+
+330
+00:13:09,022 --> 00:13:11,230
+is how to take some,
+some data set of images
+
+331
+00:13:11,230 --> 00:13:13,110
+run a bunch of, run a bunch of images
+
+332
+00:13:13,110 --> 00:13:14,815
+through our trained convolutional network
+
+333
+00:13:14,815 --> 00:13:17,174
+and recorded that 4096 dimensional vector
+
+334
+00:13:17,174 --> 00:13:18,687
+for each of those images.
+
+335
+00:13:18,687 --> 00:13:20,722
+And now go through and try to figure out
+
+336
+00:13:20,722 --> 00:13:23,219
+and visualize that last
+layer, that last hidden layer
+
+337
+00:13:23,219 --> 00:13:26,075
+rather than those rather than
+the first convolutional layer.
+
+338
+00:13:26,075 --> 00:13:27,804
+So, one thing you might imagine is,
+
+339
+00:13:27,804 --> 00:13:29,791
+is trying a nearest neighbor approach.
+
+340
+00:13:29,791 --> 00:13:31,559
+So, remember, way back
+in the second lecture
+
+341
+00:13:31,559 --> 00:13:33,162
+we saw this graphic on the left
+
+342
+00:13:33,162 --> 00:13:36,045
+where we, where we had a
+nearest neighbor classifier.
+
+343
+00:13:36,045 --> 00:13:37,967
+Where we were looking at
+nearest neighbors in pixels
+
+344
+00:13:37,967 --> 00:13:40,303
+space between CIFAR 10 images.
+
+345
+00:13:40,303 --> 00:13:41,996
+And then when you look
+at nearest neighbors
+
+346
+00:13:41,996 --> 00:13:44,765
+in pixel space between CIFAR 10 images
+
+347
+00:13:44,765 --> 00:13:46,500
+you see that you pull up images
+
+348
+00:13:46,500 --> 00:13:48,660
+that looks quite similar
+to the query image.
+
+349
+00:13:48,660 --> 00:13:50,777
+So again on the left column
+here is some CIFAR 10 image
+
+350
+00:13:50,777 --> 00:13:52,350
+from the CIFAR 10 data set
+
+351
+00:13:52,350 --> 00:13:54,987
+and then these, these next five columns
+
+352
+00:13:54,987 --> 00:13:57,239
+are showing the nearest
+neighbors in pixel space
+
+353
+00:13:57,239 --> 00:13:58,917
+to those test set images.
+
+354
+00:13:58,917 --> 00:14:00,185
+And so for example
+
+355
+00:14:00,185 --> 00:14:02,446
+this white dog that you see here,
+
+356
+00:14:02,446 --> 00:14:04,523
+it's nearest neighbors are in pixel space
+
+357
+00:14:04,523 --> 00:14:06,328
+are these kinds of white blobby things
+
+358
+00:14:06,328 --> 00:14:08,321
+that may, may or may not be dogs,
+
+359
+00:14:08,321 --> 00:14:09,885
+but at least the raw pixels
+
+360
+00:14:09,885 --> 00:14:11,643
+of the image are quite similar.
+
+361
+00:14:11,643 --> 00:14:14,268
+So now we can do the same
+type of visualization
+
+362
+00:14:14,268 --> 00:14:16,937
+computing and visualizing
+these nearest neighbor images.
+
+363
+00:14:16,937 --> 00:14:17,963
+But rather than computing
+
+364
+00:14:17,963 --> 00:14:19,952
+the nearest neighbors in pixel space,
+
+365
+00:14:19,952 --> 00:14:21,735
+instead we can compute nearest neighbors
+
+366
+00:14:21,735 --> 00:14:24,507
+in that 4096 dimensional feature space.
+
+367
+00:14:24,507 --> 00:14:27,107
+Which is computed by the
+convolutional network.
+
+368
+00:14:27,107 --> 00:14:28,351
+So here on the right
+
+369
+00:14:28,351 --> 00:14:29,987
+we see some examples.
+
+370
+00:14:29,987 --> 00:14:32,069
+So this, this first column shows us
+
+371
+00:14:32,069 --> 00:14:34,924
+some examples of images from the test set
+
+372
+00:14:34,924 --> 00:14:38,338
+of image that... Of the image
+net classification data set
+
+373
+00:14:38,338 --> 00:14:41,253
+and now the, these
+subsequent columns show us
+
+374
+00:14:41,253 --> 00:14:43,614
+nearest neighbors to those test set images
+
+375
+00:14:43,614 --> 00:14:46,863
+in the 4096, in the 4096th
+dimensional features space
+
+376
+00:14:46,863 --> 00:14:48,515
+computed by Alex net.
+
+377
+00:14:48,515 --> 00:14:51,010
+And you can see here that
+this is quite different
+
+378
+00:14:51,010 --> 00:14:52,941
+from the pixel space nearest neighbors,
+
+379
+00:14:52,941 --> 00:14:55,086
+because the pixels are
+often quite different.
+
+380
+00:14:55,086 --> 00:14:57,111
+between the image in
+it's nearest neighbors
+
+381
+00:14:57,111 --> 00:14:58,375
+and feature space.
+
+382
+00:14:58,375 --> 00:15:03,031
+However, the semantic content of those images
+tends to be similar in this feature space.
+
+383
+00:15:03,031 --> 00:15:10,484
+So for example, if you look at this second layer the query image is this
+elephant standing on the left side of the image with a screen grass behind him.
+
+384
+00:15:10,484 --> 00:15:17,307
+and now one of these, one of these... it's third nearest neighbor in the
+tough set is actually an elephant standing on the right side of the image.
+
+385
+00:15:17,307 --> 00:15:26,942
+So this is really interesting. Because between this elephant standing on the left and this element
+stand, elephant standing on the right the pixels between those two images are almost entirely different.
+
+386
+00:15:26,942 --> 00:15:32,554
+However, in the feature space which is learned by the network
+those two images and that being very close to each other.
+
+387
+00:15:32,554 --> 00:15:37,975
+Which means that somehow this, this last their features is
+capturing some of those semantic content of these images.
+
+388
+00:15:37,975 --> 00:15:46,192
+That's really cool and really exciting and, and in general looking at these kind of nearest neighbor
+visualizations is really quick and easy way to visualize something about what's going on here.
+
+389
+00:16:02,617 --> 00:16:04,630
+Yes. So the question is that
+
+390
+00:16:04,630 --> 00:16:13,942
+through the... the standard supervised learning procedure for classific training, classification
+network There's nothing in the loss encouraging these features to be close together.
+
+391
+00:16:13,942 --> 00:16:21,476
+So that, that's true. It just kind of a happy accident that they end up being close to each
+other. Because we didn't tell the network during training these features should be close.
+
+392
+00:16:21,476 --> 00:16:28,746
+However there are sometimes people do train networks using
+things called either contrastive loss or a triplet loss.
+
+393
+00:16:28,746 --> 00:16:37,253
+Which actually explicitly make... assumptions and constraints on the network such
+that those last their features end up having some metric space interpretation.
+
+394
+00:16:37,253 --> 00:16:39,907
+But Alex net at least was not
+trained specifically for that.
+
+395
+00:16:44,931 --> 00:16:46,060
+The question is, what is the nearest...
+
+396
+00:16:46,060 --> 00:16:48,875
+What is this nearest neighbor thing
+have to do at the last layer?
+
+397
+00:16:48,875 --> 00:16:51,432
+So we're taking this image
+we're running it through the network
+
+398
+00:16:51,432 --> 00:16:57,670
+and then the, the second to last like the last hidden
+layer of the network is of 4096th dimensional vector.
+
+399
+00:16:57,670 --> 00:17:01,797
+Because there's this, this is... This is there, there are
+these fully connected layers at the end of the network.
+
+400
+00:17:01,797 --> 00:17:06,893
+So we are doing is... We're writing down that
+4096th dimensional vector for each of the images
+
+401
+00:17:06,894 --> 00:17:12,966
+and then we are computing nearest neighbors according to that 4096th
+dimensional vector. Which is computed by, computed by the network.
+
+402
+00:17:17,012 --> 00:17:19,171
+Maybe, maybe we can chat offline.
+
+403
+00:17:19,171 --> 00:17:28,434
+So another, another, another another angle that we might have for visualizing
+what's going on in this last layer is by some concept of dimensionality reduction.
+
+404
+00:17:28,435 --> 00:17:33,220
+So those of you who have taken CS229 for
+example you've seen something like PCA.
+
+405
+00:17:33,220 --> 00:17:39,841
+Which let's you take some high dimensional representation like these
+4096th dimensional features and then compress it down to two-dimensions.
+
+406
+00:17:39,841 --> 00:17:43,183
+So then you can visualize that
+feature space more directly.
+
+407
+00:17:43,183 --> 00:17:51,321
+So, Principle Component Analysis or PCA is kind of one way to do that.
+But there's real another really powerful algorithm called t-SNE.
+
+408
+00:17:51,321 --> 00:17:54,656
+Standing for t-distributed
+stochastic neighbor embeddings.
+
+409
+00:17:54,656 --> 00:18:03,137
+Which is slightly more powerful method. Which is a non-linear dimensionality
+reduction method that people in deep often use for visualizing features.
+
+410
+00:18:03,137 --> 00:18:07,264
+So here as an, just an
+example of what t-SNE can do.
+
+411
+00:18:07,264 --> 00:18:13,231
+This visualization here is, is showing a t-SNE
+dimensionality reduction on the emnest data set.
+
+412
+00:18:13,231 --> 00:18:17,521
+So, emnest remember is this date set of
+hand written digits between zero and nine.
+
+413
+00:18:17,521 --> 00:18:22,226
+Each image is a gray scale image
+20... 28 by 28 gray scale image
+
+414
+00:18:22,226 --> 00:18:32,020
+and now we're... So that Now we've, we've used t-SNE to take that 28 times 28 dimensional
+features space of the raw pixels for m-nest and now compress it down to two- dimensions
+
+415
+00:18:32,020 --> 00:18:37,096
+ans then visualize each of those m-nest digits
+in this compress two-dimensional representation
+
+416
+00:18:37,096 --> 00:18:42,653
+and when you do, when you run t-SNE on the raw pixels and
+m-nest You can see these natural clusters appearing.
+
+417
+00:18:42,653 --> 00:18:47,532
+Which corresponds to the, the digits of
+these m-nest of, of these m-nest data set.
+
+418
+00:18:47,532 --> 00:18:57,348
+So now we can do a similar type of visualization. Where we apply this t-SNE dimensionality
+reduction technique to the features from the last layer of our trained image net classifier.
+
+419
+00:18:57,348 --> 00:19:05,073
+So...To be a little bit more concrete here what we've done is that we
+take, a large set of images we run them off convolutional network.
+
+420
+00:19:05,073 --> 00:19:10,865
+We record that final 4096th dimensional feature vector
+for, from the last layer of each of those images.
+
+421
+00:19:10,865 --> 00:19:14,756
+Which gives us large collection
+of 4096th dimensional vectors.
+
+422
+00:19:14,756 --> 00:19:24,277
+Now we apply t-SNE dimensionality reduction to compute, sort of compress that
+4096the dimensional features space down into a two-dimensional feature space
+
+423
+00:19:24,277 --> 00:19:36,415
+and now we, layout a grid in that compressed two-dimensional feature space and visualize what
+types of images appear at each location in the grid in this two-dimensional feature space.
+
+424
+00:19:36,415 --> 00:19:43,417
+So by doing this you get some very close rough sense of
+what the geometry of this learned feature space looks like.
+
+425
+00:19:43,417 --> 00:19:48,620
+So these images are little bit hard to see. So I'd encourage
+you to check out the high resolution versions online.
+
+426
+00:19:48,620 --> 00:19:56,451
+But at least maybe on the left you can see that there's sort of one cluster
+in the bottom here of, of green things, is a different kind of flowers
+
+427
+00:19:56,451 --> 00:20:01,800
+and there's other types of clusters for different types of
+dog breeds and another types of animals and, and locations.
+
+428
+00:20:01,800 --> 00:20:06,192
+So there's sort of discontinuous
+semantic notion in this feature space.
+
+429
+00:20:06,192 --> 00:20:11,597
+Which we can explore by looking through this t-SNE
+dimensionality reduction version of the, of the features.
+
+430
+00:20:11,597 --> 00:20:12,604
+Is there question?
+
+431
+00:20:23,716 --> 00:20:29,793
+Yeah. So the basic idea is that we're we, we have an image so now we
+end up with three different pieces of information about each image.
+
+432
+00:20:29,793 --> 00:20:31,308
+We have the pixels of the image.
+
+433
+00:20:31,308 --> 00:20:33,353
+We have the 4096th dimensional vector.
+
+434
+00:20:33,353 --> 00:20:38,109
+Then we use t-SNE to convert the 4096th dimensional
+vector into a two-dimensional coordinate
+
+435
+00:20:38,109 --> 00:20:49,547
+and then we take the original pixels of the image and place that at the two-dimensional coordinate corresponding
+to the dimensionality reduced version of the 4096th dimensional feature. Yeah, little bit involved here.
+
+436
+00:20:49,547 --> 00:20:50,348
+Question in the front.
+
+437
+00:20:55,864 --> 00:20:59,255
+The question is Roughly how much
+variants do these two-dimension explain?
+
+438
+00:20:59,255 --> 00:21:06,080
+Well, I'm not sure of the exact number and I get little bit muddy when you're
+talking about t-SNE, because it's a non-linear dimensionality reduction technique.
+
+439
+00:21:06,080 --> 00:21:10,259
+So, I'd have to look offline and I'm not
+sure of exactly how much it explains.
+
+440
+00:21:10,259 --> 00:21:14,377
+Question?
+
+441
+00:21:14,377 --> 00:21:17,038
+Question is, can you do the same analysis
+of upper layers of the network?
+
+442
+00:21:17,038 --> 00:21:21,384
+And yes, you can. But no, I don't have
+those visualizations here. Sorry.
+
+443
+00:21:21,384 --> 00:21:24,603
+Question?
+
+444
+00:21:35,559 --> 00:21:39,482
+The question is, Shouldn't we have overlaps of
+images once we do this dimensionality reduction?
+
+445
+00:21:39,482 --> 00:21:40,902
+And yes, of course, you would.
+
+446
+00:21:40,902 --> 00:21:47,537
+So this is just kind of taking a, nearest neighbor in our, in our
+regular grid and then picking an image close to that grid point.
+
+447
+00:21:47,537 --> 00:21:54,792
+So, so... they, yeah. this is not showing you the kind
+of density in different parts of the feature space.
+
+448
+00:21:54,792 --> 00:22:03,122
+So that's, that's another thing to look at and again at the link you, there's a
+couple more visualizations of this nature that, that address that a little bit.
+
+449
+00:22:03,122 --> 00:22:07,713
+Okay. So another, another thing that you can
+do for some of these intermediate features
+
+450
+00:22:07,713 --> 00:22:13,856
+is, so we talked a couple of slides ago that visualizing the
+weights of these intermediate layers is not so interpretable.
+
+451
+00:22:13,856 --> 00:22:20,846
+But actually visualizing the activation maps of those
+intermediate layers is kind of interpretable in some cases.
+
+452
+00:22:20,846 --> 00:22:28,603
+So for, so I, again an example of Alex Net. Remember the,
+the conv5 layers of Alex Net. Gives us this 128 by...
+
+453
+00:22:28,603 --> 00:22:35,668
+The for...The conv5 features for any image
+is now 128 by 13 by 13 dimensional tensor.
+
+454
+00:22:35,668 --> 00:22:42,386
+But we can think of that as 128
+different 13 by 132-D grids.
+
+455
+00:22:42,386 --> 00:22:49,741
+So now we can actually go and visualize each of those 13 by
+13 elements slices of the feature map as a grayscale image
+
+456
+00:22:49,741 --> 00:22:58,501
+and this gives us some sense for what types of things in the input
+are each of those features in that convolutional layer looking for.
+
+457
+00:22:58,501 --> 00:23:03,306
+So this is a, a really cool interactive tool
+by Jason Yasenski you can just download.
+
+458
+00:23:03,306 --> 00:23:06,598
+So it's run, so I don't have the video,
+it has a video on his website.
+
+459
+00:23:06,598 --> 00:23:10,059
+But it's running a convolutional network
+on the inputs stream of webcam
+
+460
+00:23:10,059 --> 00:23:17,279
+and then visualizing in real time each of those slices of that
+intermediate feature map give you a sense of what it's looking for
+
+461
+00:23:17,279 --> 00:23:23,931
+and you can see that, so here the input image is this, this picture
+up in, settings... of this picture of a person in front of the camera
+
+462
+00:23:23,931 --> 00:23:28,192
+and most of these intermediate features
+are kind of noisy, not much going on.
+
+463
+00:23:28,192 --> 00:23:34,277
+But there's a, but there's this one highlighted
+intermediate feature where that is also shown larger here
+
+464
+00:23:34,277 --> 00:23:41,103
+that seems that it's activating on the portions of the feature map
+corresponding to the person's face. Which is really interesting
+
+465
+00:23:41,103 --> 00:23:51,045
+and that kind of, suggests that maybe this, this particular slice of the feature map of this
+layer of this particular network is maybe looking for human faces or something like that.
+
+466
+00:23:51,045 --> 00:23:54,132
+Which is kind of a nice, kind of a nice
+and cool finding.
+
+467
+00:23:54,132 --> 00:23:55,517
+Question?
+
+468
+00:23:59,038 --> 00:24:04,957
+The question is, Are the black activations dead relu's?
+So you got to be... a little careful with terminology.
+
+469
+00:24:04,957 --> 00:24:09,539
+We usually say dead relu to mean something
+that's dead over the entire training data set.
+
+470
+00:24:09,539 --> 00:24:14,701
+Here I would say that it's a relu, that,
+it's not active for this particular input.
+
+471
+00:24:14,701 --> 00:24:15,702
+Question?
+
+472
+00:24:19,457 --> 00:24:22,538
+The question is, If there's no humans in
+image net how can it recognize a human face?
+
+473
+00:24:22,538 --> 00:24:24,182
+There definitely are humans in image net
+
+474
+00:24:24,182 --> 00:24:29,020
+I don't think it's, it's one of the cat... I don't think it's one
+of the thousand categories for the classification challenge.
+
+475
+00:24:29,020 --> 00:24:34,906
+But people definitely appear in a lot of these images and that
+can be useful signal for detecting other types of things.
+
+476
+00:24:34,906 --> 00:24:41,617
+So that's actually kind of nice results because that shows that, it's sort
+of can learn features that are useful for the classification task at hand.
+
+477
+00:24:41,617 --> 00:24:47,483
+That are even maybe a little bit different from the explicit classification
+task that we told it to perform. So it's actually really cool results.
+
+478
+00:24:50,346 --> 00:24:51,929
+Okay, question?
+
+479
+00:24:55,192 --> 00:25:03,334
+So at each layer in the convolutional network our input image is of three,
+it's like 3 by 224 by 224 and then it goes through many stages of convolution.
+
+480
+00:25:03,334 --> 00:25:07,731
+And then, it, after each convolutional layer
+is some three dimensional chunk of numbers.
+
+481
+00:25:07,731 --> 00:25:10,476
+Which are the outputs from that layer
+of the convolutional network.
+
+482
+00:25:10,476 --> 00:25:18,155
+And that into the entire three dimensional chunk of numbers which are the output
+of the previous convolutional layer, we call, we call, like an activation volume
+
+483
+00:25:18,155 --> 00:25:22,156
+and then one of those, one of those slices
+is a, it's an activation map.
+
+484
+00:25:34,426 --> 00:25:38,513
+So the question is, If the image is K by K
+will the activation map be K by K?
+
+485
+00:25:38,513 --> 00:25:42,489
+Not always because there can be sub sampling
+due to pool, straight convolution and pooling.
+
+486
+00:25:42,489 --> 00:25:47,756
+But in general, the, the size of each activation
+map will be linear in the size of the input image.
+
+487
+00:25:50,492 --> 00:25:55,625
+So another, another kind of useful thing we can
+do for visualizing intermediate features is...
+
+488
+00:25:55,625 --> 00:26:03,453
+Visualizing what types of patches from input images cause maximal
+activation in different, different features, different neurons.
+
+489
+00:26:03,453 --> 00:26:08,605
+So what we've done here is that, we pick...
+Maybe again the con five layer from Alex Net?
+
+490
+00:26:08,605 --> 00:26:10,926
+And remember each of
+these activation volumes
+
+491
+00:26:10,926 --> 00:26:15,738
+at the con, at the con five in Alex net gives
+us a 128 by 13 by 13 chunk of numbers.
+
+492
+00:26:15,738 --> 00:26:19,644
+Then we'll pick one of those 128 channels.
+Maybe channel 17
+
+493
+00:26:19,644 --> 00:26:23,749
+and now what we'll do is run many images
+through this convolutional network.
+
+494
+00:26:23,749 --> 00:26:27,456
+And then, for each of those images
+record the con five features
+
+495
+00:26:27,456 --> 00:26:37,925
+and then look at the... Right, so, then, then look at the, the... The parts of
+that 17th feature map that are maximally activated over our data set of images.
+
+496
+00:26:37,925 --> 00:26:45,161
+And now, because again this is a convolutional layer each of those neurons
+in the convolutional layer has some small receptive field in the input.
+
+497
+00:26:45,161 --> 00:26:49,239
+Each of those neurons is not looking at the whole image.
+They're only looking at the sub set of the image.
+
+498
+00:26:49,239 --> 00:27:00,731
+Then what we'll do is, is visualize the patches from the, from this large data set of images corresponding
+to the maximal activations of that, of that feature, of that particular feature in that particular layer.
+
+499
+00:27:00,731 --> 00:27:06,177
+And then we can sorts these out, sort these patches by
+their activation at that, at that particular layer.
+
+500
+00:27:06,177 --> 00:27:12,575
+So here is a, some examples from this... Network
+called a, fully... The network doesn't matter.
+
+501
+00:27:12,575 --> 00:27:16,380
+But these are some visualizations of these
+kind of maximally activating patches.
+
+502
+00:27:16,380 --> 00:27:22,500
+So, each, each row gives... We've chosen one layer
+from or one neuron from one layer of a network
+
+503
+00:27:22,500 --> 00:27:28,280
+and then each, and then, the, they're sorted of these
+are the patches from some large data set of images.
+
+504
+00:27:28,280 --> 00:27:30,611
+That maximally activated this one neuron.
+
+505
+00:27:30,611 --> 00:27:35,698
+And these can give you a sense for what type of
+features these, these neurons might be looking for.
+
+506
+00:27:35,698 --> 00:27:39,998
+So for example, this top row we see a lot
+of circly kinds of things in the image.
+
+507
+00:27:39,998 --> 00:27:44,621
+Some eyes, some, mostly eyes.
+But also this, kind of blue circly region.
+
+508
+00:27:44,621 --> 00:27:51,303
+So then, maybe this, this particular neuron in this particular layer of
+this network is looking for kind of blue circly things in the input.
+
+509
+00:27:51,303 --> 00:27:56,200
+Or maybe in the middle here we have neurons
+that are looking for text in different colors
+
+510
+00:27:56,200 --> 00:28:02,201
+or, or maybe curving, curving edges
+of different colors and orientations.
+
+511
+00:28:06,246 --> 00:28:09,199
+Yeah, so, I've been a little bit loose
+with terminology here.
+
+512
+00:28:09,199 --> 00:28:13,970
+So, I'm saying that a neuron is one scaler
+value in that con five activation map.
+
+513
+00:28:13,970 --> 00:28:19,283
+But because it's convolutional, all the neurons
+in one channel are all using the same weights.
+
+514
+00:28:19,283 --> 00:28:26,451
+So we've chosen one channel and then, right? So, you get a lot
+of neurons for each convolutional filter at any one layer.
+
+515
+00:28:26,451 --> 00:28:32,532
+So, we, we could have been, so this patches could've been drawn from
+anywhere in the image due to the convolutional nature of the thing.
+
+516
+00:28:32,532 --> 00:28:38,721
+And now at the bottom we also see some maximally activating
+patches for neurons from a higher up layer in the same network.
+
+517
+00:28:38,721 --> 00:28:42,294
+And now because they are coming from higher in
+the network they have a larger receptive field.
+
+518
+00:28:42,294 --> 00:28:44,851
+So, they're looking at larger
+patches of the input image
+
+519
+00:28:44,851 --> 00:28:49,213
+and we can also see that they're looking for
+maybe larger structures in the input image.
+
+520
+00:28:49,213 --> 00:28:56,445
+So this, this second row is maybe looking, it seems
+to be looking for human, humans or maybe human faces.
+
+521
+00:28:56,445 --> 00:29:06,410
+We have maybe something looking for... Parts of cameras or different types
+of larger, larger, larger object like type things, types of things.
+
+522
+00:29:06,410 --> 00:29:11,885
+Another, another cool experiment we can do which
+comes from Zeiler and Fergus ECCV 2014 paper.
+
+523
+00:29:11,885 --> 00:29:14,062
+is this idea of an exclusion experiment.
+
+524
+00:29:14,062 --> 00:29:21,659
+So, what we want to do is figure out which parts of the input, of the
+input image cause the network to make it's classification decision.
+
+525
+00:29:21,659 --> 00:29:25,339
+So, what we'll do is, we'll take our
+input image in this case an elephant
+
+526
+00:29:25,339 --> 00:29:32,486
+and then we'll block out some part of that, some region in that input
+image and just replace it with the mean pixel value from the data set.
+
+527
+00:29:32,486 --> 00:29:39,583
+And now, run that occluded image throughout, through the network and
+then record what is the predicted probability of this occluded image?
+
+528
+00:29:39,583 --> 00:29:44,752
+And now slide this occluded patch over every position
+in the input image and then repeat the same process.
+
+529
+00:29:44,752 --> 00:29:53,699
+And then draw this heat map showing, what was the predicted probability output from
+the network as a function of where did, which part of the input image did we occlude?
+
+530
+00:29:53,699 --> 00:29:59,952
+And the idea is that if when we block out some part of the
+image if that causes the network score to change drastically.
+
+531
+00:29:59,952 --> 00:30:04,809
+Then probably that part of the input image was
+really important for the classification decision.
+
+532
+00:30:04,809 --> 00:30:11,420
+So here we've shown... I've shown three different
+examples of... Of this occlusion type experiment.
+
+533
+00:30:11,420 --> 00:30:14,456
+So, maybe this example of
+a Go-kart at the bottom,
+
+534
+00:30:14,456 --> 00:30:23,077
+you can see over here that when we, so here, red, the, the red corresponds to
+a low probability and the white and yellow corresponds to a high probability.
+
+535
+00:30:23,077 --> 00:30:30,348
+So when we block out the region of the image corresponding to this Go-kart
+in front. Then the predicted probability for the Go-kart class drops a lot.
+
+536
+00:30:30,348 --> 00:30:38,419
+So that gives us some sense that the network is actually caring a lot about these,
+these pixels in the input image in order to make it's classification decision.
+
+537
+00:30:38,419 --> 00:30:39,589
+Question?
+
+538
+00:30:47,473 --> 00:30:49,780
+Yes, the question is that,
+what's going on in the background?
+
+539
+00:30:49,780 --> 00:30:56,020
+So maybe if the image is a little bit too small to tell but, there's, this is
+actually a Go-kart track and there's a couple other Go-karts in the background.
+
+540
+00:30:56,020 --> 00:31:00,395
+So I think that, when you're blocking out these other
+Go-karts in the background, that's also influencing the score
+
+541
+00:31:00,395 --> 00:31:04,628
+or maybe like the horizon is there and maybe the
+horizon is an useful feature for detecting Go-karts,
+
+542
+00:31:04,628 --> 00:31:08,976
+it's a little bit hard to tell sometimes.
+But this is a pretty cool visualization.
+
+543
+00:31:08,976 --> 00:31:10,118
+Yeah, was there another question?
+
+544
+00:31:20,486 --> 00:31:23,500
+So the question is, sorry,
+sorry, what was the first question?
+
+545
+00:31:30,731 --> 00:31:36,802
+So, the, so the question... So for, for this example we're
+taking one image and then masking all parts of one image.
+
+546
+00:31:36,802 --> 00:31:38,777
+The second question
+was, how is this useful?
+
+547
+00:31:38,777 --> 00:31:42,982
+It's not, maybe, you don't really take this information
+and then loop it directly into the training process.
+
+548
+00:31:42,982 --> 00:31:49,341
+Instead, this is a way, a tool for humans to understand,
+what types of computations these train networks are doing.
+
+549
+00:31:49,341 --> 00:31:54,296
+So it's more for your understanding
+than for improving performance per se.
+
+550
+00:31:54,296 --> 00:31:57,890
+So another, another related idea
+is this concept of a Saliency Map.
+
+551
+00:31:57,890 --> 00:32:00,534
+Which is something that you
+will see in your homeworks.
+
+552
+00:32:00,534 --> 00:32:02,578
+So again, we have the same question
+
+553
+00:32:02,578 --> 00:32:07,831
+of given an input image of a dog in this
+case and the predicted class label of dog
+
+554
+00:32:07,831 --> 00:32:11,796
+we want to know which pixels in the input
+image are important for classification.
+
+555
+00:32:11,796 --> 00:32:19,452
+We saw masking, is one way to get at this question. But Saliency
+Maps are another, another, angle for attacking this problem.
+
+556
+00:32:19,452 --> 00:32:25,354
+And the question is, and one relatively simple idea
+from Karen Simonenian's paper, a couple years ago.
+
+557
+00:32:25,354 --> 00:32:31,694
+Is, this is just computing the gradient of the predicted
+class score with respect to the pixels of the input image.
+
+558
+00:32:31,694 --> 00:32:36,042
+And this will directly tell us in this
+sort of, first order approximation sense.
+
+559
+00:32:36,042 --> 00:32:43,963
+For each input, for each pixel in the input image if we wiggle that pixel a
+little bit then how much will the classification score for the class change?
+
+560
+00:32:43,963 --> 00:32:50,496
+And this is another way to get at this question of which
+pixels in the input matter for the classification.
+
+561
+00:32:50,496 --> 00:32:59,356
+And when we, and when we run for example Saliency, where computer Saliency
+map for this dog, we see kind of a nice outline of a dog in the image.
+
+562
+00:32:59,356 --> 00:33:04,985
+Which tells us that these are probably the pixels of
+that, network is actually looking at, for this image.
+
+563
+00:33:04,985 --> 00:33:11,675
+And when we repeat this type of process for different images, we get
+some sense that the network is sort of looking at the right regions.
+
+564
+00:33:11,675 --> 00:33:13,360
+Which is somewhat comforting.
+
+565
+00:33:13,360 --> 00:33:14,462
+Question?
+
+566
+00:33:17,407 --> 00:33:21,916
+The question is, do people use Saliency Maps
+for semantic segmentation? The answer is yes.
+
+567
+00:33:21,916 --> 00:33:26,741
+That actually was... Yeah, you guys are
+like really on top of it this lecture.
+
+568
+00:33:26,741 --> 00:33:29,513
+So that was another component,
+again in Karen's paper.
+
+569
+00:33:29,513 --> 00:33:38,925
+Where there's this idea that maybe you can use these Saliency Maps to perform semantic
+segmentation without direct, without any labeled data for the, for these, for these segments.
+
+570
+00:33:38,925 --> 00:33:43,908
+So here they're using this Grabcut Segmentation Algorithm
+which I don't really want to get into the details of.
+
+571
+00:33:43,908 --> 00:33:47,772
+But it's kind of an interactive
+segmentation algorithm that you can use.
+
+572
+00:33:47,772 --> 00:33:55,697
+So then when you combine this Saliency Map with this Grabcut Segmentation
+Algorithm then you can in fact, sometimes segment out the object in the image.
+
+573
+00:33:55,697 --> 00:34:00,326
+Which is really cool. However I'd like to
+point out that this is a little bit brittle
+
+574
+00:34:00,326 --> 00:34:07,182
+and in general if you, this will probably work much, much, much, worse
+than a network which did have access to supervision and training time.
+
+575
+00:34:07,182 --> 00:34:13,458
+So, I don't, I'm not sure how, how practical this
+is. But it is pretty cool that it works at all.
+
+576
+00:34:13,458 --> 00:34:19,025
+But it probably works much less than something
+trained explicitly to segment with supervision.
+
+577
+00:34:19,025 --> 00:34:23,791
+So kind of another, another related idea is
+this idea of, of guided back propagation.
+
+578
+00:34:23,791 --> 00:34:30,001
+So again, we still want to answer the question
+of for one particular, for one particular image.
+
+579
+00:34:30,001 --> 00:34:37,420
+Then now instead of looking at the class score we want to know, we
+want to pick some intermediate neuron in the network and ask again,
+
+580
+00:34:37,420 --> 00:34:44,199
+which parts of the input image influence the score
+of that neuron, that internal neuron in the network.
+
+581
+00:34:44,199 --> 00:34:49,059
+And, and then you could imagine, again you could imagine
+computing a Saliency Map for this again, right?
+
+582
+00:34:49,059 --> 00:34:53,466
+That rather than computing the gradient of the class
+scores with respect to the pixels of the image.
+
+583
+00:34:53,466 --> 00:34:58,815
+You could compute the gradient of some intermediate value
+in the network with respect to the pixels of the image.
+
+584
+00:34:58,815 --> 00:35:05,832
+And that would tell us again which parts, which pixels in the
+input image influence that value of that particular neuron.
+
+585
+00:35:05,832 --> 00:35:08,342
+And that would be using
+normal back propagation.
+
+586
+00:35:08,342 --> 00:35:15,093
+But it turns out that there is a slight tweak that we can do to this back
+propagation procedure that ends up giving some slightly cleaner images.
+
+587
+00:35:15,093 --> 00:35:21,393
+So that's this idea of guided back propagation that
+again comes from Zeiler and Fergus's 2014 paper.
+
+588
+00:35:21,393 --> 00:35:24,203
+And I don't really want to get
+into the details too much here
+
+589
+00:35:24,203 --> 00:35:30,220
+but, it, you just, it's kind of weird tweak where you change
+the way that you back propagate through relu non-linearities.
+
+590
+00:35:30,220 --> 00:35:37,254
+And you sort of, only, only back propagate positive gradients through
+relu's and you do not back propagate negative gradients through the relu's.
+
+591
+00:35:37,254 --> 00:35:46,948
+So you're no longer computing the true gradient instead you're kind of only
+keeping track of positive influences on throughout the entire network.
+
+592
+00:35:46,948 --> 00:35:53,614
+So maybe you should read through these, these papers reference to your,
+if you want a little bit more details about why that's a good idea.
+
+593
+00:35:53,614 --> 00:36:01,649
+But empirically, when you do guided back propagation as appose to
+regular back propagation. You tend to get much cleaner, nicer images.
+
+594
+00:36:01,649 --> 00:36:07,223
+that tells you, which part, which pixel of the
+input image influence that particular neuron.
+
+595
+00:36:07,223 --> 00:36:12,467
+So, again we were seeing the same visualization we saw
+a few slides ago of the maximally activating patches.
+
+596
+00:36:16,488 --> 00:36:20,174
+But now, in addition to visualizing
+these maximally activating patches.
+
+597
+00:36:20,174 --> 00:36:27,604
+We've also performed guided back propagation, to tell us exactly
+which parts of these patches influence the score of that neuron.
+
+598
+00:36:27,604 --> 00:36:37,139
+So, remember for this example at the top, we saw that, we thought this neuron is may be looking
+for circly tight things, in the input patch because there're allot of circly tight patches.
+
+599
+00:36:37,139 --> 00:36:42,028
+Well, when we look at guided back propagation We
+can see with that intuition is somewhat confirmed
+
+600
+00:36:42,028 --> 00:36:49,218
+because it is indeed the circly parts of that input
+patch which are influencing that, that neuron value.
+
+601
+00:36:49,218 --> 00:36:56,514
+So, this is kind of a useful to all for synthesizing. For
+understanding what these different intermediates are looking for.
+
+602
+00:36:56,514 --> 00:37:05,108
+But, one kind of interesting thing about guided back propagation or computing
+saliency maps. Is that there's always a function of fixed input image,
+
+603
+00:37:05,108 --> 00:37:12,882
+right, they're telling us for a fixed input image, which pixel or
+which parts of that input image influence the value of the neuron.
+
+604
+00:37:12,882 --> 00:37:19,110
+Another question you might answer is is remove
+this reliance, on that, on some input image.
+
+605
+00:37:19,110 --> 00:37:24,641
+And then instead just ask what type of input
+in general would cause this neuron to activate
+
+606
+00:37:24,641 --> 00:37:29,118
+and we can answer this question
+using a technical Gradient ascent
+
+607
+00:37:29,118 --> 00:37:34,903
+so, remember we always use Gradient decent to train
+our convolutional networks by minimizing the loss.
+
+608
+00:37:34,903 --> 00:37:40,552
+Instead now, we want to fix the, fix the
+weight of our trained convolutional network
+
+609
+00:37:40,552 --> 00:37:50,932
+and instead synthesizing image by performing Gradient ascent on the pixels of the
+image to try and maximize the score of some intermediate neuron or of some class.
+
+610
+00:37:50,932 --> 00:37:58,333
+So, in a process of Gradient ascent, we're no longer optimizing
+over the weights of the network those weights remained fixed
+
+611
+00:37:58,333 --> 00:38:07,104
+instead we're trying to change pixels of some input image to cause this neuron,
+or this neuron value, or this class score to maximally, to be maximized
+
+612
+00:38:07,104 --> 00:38:10,475
+but, instead but, in addition
+we need some regularization term
+
+613
+00:38:10,475 --> 00:38:19,078
+so, remember we always a, we before seeing regularization terms to try
+to prevent the network weights from over fitting to the training data.
+
+614
+00:38:19,078 --> 00:38:27,109
+Now, we need something kind of similar to prevent the pixels of our generated
+image from over fitting to the peculiarities of that particular network.
+
+615
+00:38:27,109 --> 00:38:34,664
+So, here we'll often incorporate some regularization term that,
+we're kind of, we want a generated image of two properties
+
+616
+00:38:34,664 --> 00:38:39,269
+one, we wanted to maximally activate some,
+some score or some neuron value.
+
+617
+00:38:39,269 --> 00:38:42,111
+But, we also wanted to
+look like a natural image.
+
+618
+00:38:42,111 --> 00:38:46,485
+we wanted to kind of have, the kind of statistics
+that we typically see in natural images.
+
+619
+00:38:46,485 --> 00:38:52,936
+So, these regularization term in the subjective is something
+to enforce a generated image to look relatively natural.
+
+620
+00:38:52,936 --> 00:38:57,116
+And we'll see a couple of different
+examples of regualizers as we go through.
+
+621
+00:38:57,116 --> 00:39:04,371
+But, the general strategy for this is actually pretty simple and again
+informant allot of things of this nature on your assignment three.
+
+622
+00:39:04,371 --> 00:39:10,410
+But, what we'll do is start with some initial image
+either initializing to zeros or to uniform or noise.
+
+623
+00:39:10,410 --> 00:39:19,922
+But, initialize your image in some way and I'll repeat where you forward your image
+through 3D network and compute the score or, or neuron value that you're interested.
+
+624
+00:39:19,922 --> 00:39:26,643
+Now, back propagate to compute the Gradient of that
+neuron score with respect to the pixels of the image
+
+625
+00:39:26,643 --> 00:39:33,897
+and then make a small Gradient ascent or Gradient ascent update to
+the pixels of the images itself. To try and maximize that score.
+
+626
+00:39:33,897 --> 00:39:38,786
+And I'll repeat this process over and over
+again, until you have a beautiful image.
+
+627
+00:39:38,786 --> 00:39:42,311
+And, then we talked, we talked
+about the image regularizer,
+
+628
+00:39:42,311 --> 00:39:49,428
+well a very simple, a very simple idea for image regularizer
+is simply to penalize L2 norm of a generated image
+
+629
+00:39:49,428 --> 00:39:51,466
+This is not so semantically meaningful,
+
+630
+00:39:51,466 --> 00:40:01,764
+it's just does something, and this was one of the, one of the earliest regularizer
+that we've seen in the literature for these type of generating images type of papers.
+
+631
+00:40:01,764 --> 00:40:12,153
+And, when you run this on a trained network you can see that now we're trying to generate
+images that maximize the dumble score in the upper left hand corner here for example.
+
+632
+00:40:12,153 --> 00:40:14,820
+And, then you can see that
+the synthesized image,
+
+633
+00:40:14,820 --> 00:40:19,726
+it been, it's little bit hard to see may be but
+there're allot of different dumble like shapes,
+
+634
+00:40:19,726 --> 00:40:23,162
+all kind of super impose
+that different portions of the image.
+
+635
+00:40:23,162 --> 00:40:29,111
+or if we try to generate an image for cups then we can may
+be see a bunch of different cups all kind of super imposed
+
+636
+00:40:29,111 --> 00:40:30,466
+the Dalmatian is pretty cool,
+
+637
+00:40:30,466 --> 00:40:35,478
+because now we can see kind of this black and white spotted
+pattern that's kind of characteristics of Dalmatians
+
+638
+00:40:35,478 --> 00:40:40,388
+or for lemons we can see these different
+kinds of yellow splotches in the image.
+
+639
+00:40:40,388 --> 00:40:43,539
+And there's a couple of more examples here,
+I think may be the goose is kind of cool
+
+640
+00:40:43,539 --> 00:40:46,514
+or the kitfox are actually
+may be looks like kitfox.
+
+641
+00:40:46,514 --> 00:40:47,454
+Question?
+
+642
+00:40:55,528 --> 00:40:57,929
+The question is, why are
+these all rainbow colored
+
+643
+00:40:57,929 --> 00:41:02,434
+and in general getting true colors out
+of this visualization is pretty tricky.
+
+644
+00:41:02,434 --> 00:41:06,693
+Right, because any, any actual image will
+be bounded in the range zero to 255.
+
+645
+00:41:06,693 --> 00:41:10,395
+So, it really should be some kind
+of constrained optimization problem
+
+646
+00:41:10,395 --> 00:41:15,721
+But, if, for using this generic methods for Gradient
+ascent then we, that's going to be unconstrained problem.
+
+647
+00:41:15,721 --> 00:41:21,848
+So, you may be use like projector Gradient ascent
+algorithm or your rescaled image at the end.
+
+648
+00:41:21,848 --> 00:41:27,799
+So, the colors that you see in this visualizations,
+sometimes are you cannot take them too seriously.
+
+649
+00:41:27,799 --> 00:41:28,702
+Question?
+
+650
+00:41:32,801 --> 00:41:36,846
+The question is what happens, if you let the
+thing loose and don't put any regularizer on it.
+
+651
+00:41:36,846 --> 00:41:44,860
+Well, then you tend to get an image which maximize the score
+which is confidently classified as the class you wanted
+
+652
+00:41:44,860 --> 00:41:48,522
+but, usually it doesn't look like anything.
+It kind of look likes random noise.
+
+653
+00:41:48,522 --> 00:41:54,538
+So, that's kind of an interesting property in itself
+that will go into much more detail in a future lecture.
+
+654
+00:41:54,538 --> 00:42:00,913
+But, that's why, that kind of doesn't help you so much for
+understanding what things the network is looking for.
+
+655
+00:42:00,913 --> 00:42:09,607
+So, if we want to understand, why the network thing makes its decisions then it's
+kind of useful to put regularizer on there to generate an image to look more natural.
+
+656
+00:42:09,607 --> 00:42:10,471
+A question in the back.
+
+657
+00:42:34,416 --> 00:42:38,492
+Yeah, so the question is that we see a lot of multi
+modality here, and other ways to combat that.
+
+658
+00:42:38,492 --> 00:42:44,847
+And actually yes, we'll see that, this is kind of first step
+in the whole line of work in improving these visualizations.
+
+659
+00:42:44,847 --> 00:42:51,517
+So, another, another kind of, so then the angle here is a kind
+of to improve the regularizer to improve our visualized images.
+
+660
+00:42:51,517 --> 00:42:58,621
+And there's a another paper from Jason Yesenski and some of his
+collaborators where they added some additional impressive regularizers.
+
+661
+00:42:58,621 --> 00:43:00,924
+So, in addition to this
+L2 norm constraint,
+
+662
+00:43:00,924 --> 00:43:06,213
+in addition we also periodically during optimization,
+and do some gauche and blurring on the image,
+
+663
+00:43:06,213 --> 00:43:12,441
+we're also clip some,. some small value, some small pixel
+values all the way to zero, we're also clip some of the,
+
+664
+00:43:12,441 --> 00:43:14,694
+some of the pixel values
+of low Gradients to zero
+
+665
+00:43:14,694 --> 00:43:17,559
+So, you can see this is kind of
+a projector Gradient ascent algorithm
+
+666
+00:43:17,559 --> 00:43:24,555
+where it reach periodically we're projecting our generated image
+onto some nicer set of images with some nicer properties.
+
+667
+00:43:24,555 --> 00:43:28,241
+For example, special smoothness
+with respect to the gauchian blurring
+
+668
+00:43:28,241 --> 00:43:32,870
+So, when you do this, you tend to get much
+nicer images that are much clear to see.
+
+669
+00:43:32,870 --> 00:43:38,553
+So, now these flamingos look like flamingos the
+ground beetle is starting to look more beetle like
+
+670
+00:43:38,553 --> 00:43:41,695
+or this black swan maybe
+looks like a black swan.
+
+671
+00:43:41,695 --> 00:43:48,211
+These billiard tables actually look kind of impressive now,
+where you can definitely see this billiard table structure.
+
+672
+00:43:48,211 --> 00:43:55,209
+So, you can see that once you add in nicer regularizers, then
+the generated images become a bit, a little bit cleaner.
+
+673
+00:43:55,209 --> 00:44:01,038
+And, now we can perform this procedure not only for the final
+class course, but also for these intermediate neurons as well.
+
+674
+00:44:01,038 --> 00:44:10,111
+So, instead of trying to maximize our billiard table score for example
+instead we can get maximize one of the neurons from some intermediate layer
+
+675
+00:44:10,111 --> 00:44:11,118
+Question.
+
+676
+00:44:16,743 --> 00:44:19,393
+So, the question is what's
+with the for example here,
+
+677
+00:44:19,393 --> 00:44:21,794
+so those who remember
+initializing our image randomly
+
+678
+00:44:21,794 --> 00:44:25,681
+so, these four images would be different
+random initialization of the input image.
+
+679
+00:44:28,106 --> 00:44:36,113
+And again, we can use these same type of procedure to visualize, to synthesis
+images which maximally activate intermediate neurons of the network.
+
+680
+00:44:36,113 --> 00:44:40,174
+And, then you can get a sense from some of
+these intermediate neurons are looking for,
+
+681
+00:44:40,174 --> 00:44:44,605
+so may be at layer four there's neuron
+that's kind of looking for spirally things
+
+682
+00:44:44,605 --> 00:44:49,703
+or there's neuron that's may be looking for like chunks
+of caterpillars it's a little bit harder to tell.
+
+683
+00:44:49,703 --> 00:44:56,585
+But, in generally as you go larger up in the image then you can see that
+the one, the obviously receptive fields of these neurons are larger.
+
+684
+00:44:56,585 --> 00:44:58,664
+So, you're looking at the
+larger patches in the image.
+
+685
+00:44:58,664 --> 00:45:03,549
+And they tend to be looking for may be larger
+structures or more complex patterns in the input image.
+
+686
+00:45:03,549 --> 00:45:04,802
+That's pretty cool.
+
+687
+00:45:07,499 --> 00:45:15,559
+And, then people have really gone crazy with this and trying to, they
+basically improve these visualization by keeping on extra features
+
+688
+00:45:15,559 --> 00:45:23,697
+So, this was a cool paper kind of explicitly trying to address this
+multi modality, there's someone asked question about a few minutes ago.
+
+689
+00:45:23,697 --> 00:45:29,849
+So, here they were trying to explicitly take a count, take
+this multi modality into account in the optimization procedure
+
+690
+00:45:29,849 --> 00:45:35,254
+where they did indeed, I think see the initial, so they
+for each of the classes, you run a clustering algorithm
+
+691
+00:45:35,254 --> 00:45:42,667
+to try to separate the classes into different modes and then
+initialize with something that is close to one of those modes.
+
+692
+00:45:42,667 --> 00:45:45,890
+And, then when you do that, you kind
+of account for this multi modality.
+
+693
+00:45:45,890 --> 00:45:51,675
+so for intuition, on the right here these
+eight images are all of grocery stores.
+
+694
+00:45:51,675 --> 00:45:56,401
+But, the top row, is kind of close
+up pictures of produce on the shelf
+
+695
+00:45:56,401 --> 00:45:59,068
+and those are labeled as grocery stores
+
+696
+00:45:59,068 --> 00:46:04,221
+And the bottom row kind of shows people walking around grocery
+stores or at the checkout line or something like that.
+
+697
+00:46:04,221 --> 00:46:06,085
+And, those are also labeled
+those as grocery store,
+
+698
+00:46:06,085 --> 00:46:08,073
+but their visual appearance
+is quiet different.
+
+699
+00:46:08,073 --> 00:46:10,988
+So, a lot of these classes and
+that being sort multi modal
+
+700
+00:46:10,988 --> 00:46:17,648
+And, if you can take, and if you explicitly take this more time mortality
+into account when generating images, then you can get nicer results.
+
+701
+00:46:17,648 --> 00:46:22,569
+And now, then when you look at some of their
+example, synthesis images for classes,
+
+702
+00:46:22,569 --> 00:46:31,840
+you can see like the bell pepper, the card on, strawberries, jackolantern
+now they end up with some very beautifully generated images.
+
+703
+00:46:31,840 --> 00:46:38,177
+And now, I don't want to get to much into detail of
+the next slide. But, then you can even go crazier.
+
+704
+00:46:38,177 --> 00:46:43,623
+and add an even stronger image prior and
+generate some very beautiful images indeed
+
+705
+00:46:43,623 --> 00:46:48,921
+So, these are all synthesized images that are trying
+to maximize the class score or some image in a class.
+
+706
+00:46:48,921 --> 00:46:59,020
+But, the general idea is that rather than optimizing directly the pixels of the input
+image, instead they're trying to optimize the FC6 representation of that image instead.
+
+707
+00:46:59,020 --> 00:47:03,342
+And now they need to use some feature inversion network
+and I don't want to get into the details here.
+
+708
+00:47:03,342 --> 00:47:05,290
+You should read the paper,
+it's actually really cool
+
+709
+00:47:05,290 --> 00:47:11,905
+But, the point is that, when you start adding
+additional priors towards modeling natural images
+
+710
+00:47:11,905 --> 00:47:16,662
+and you can end generating some quiet realistic images they
+gave you some sense of what the network is looking for
+
+711
+00:47:18,951 --> 00:47:23,839
+So, that's, that's sort of one cool thing that
+we can do with this strategy, but this idea
+
+712
+00:47:23,839 --> 00:47:29,893
+of trying to synthesis images by using Gradients
+on image pixels, is actually super powerful.
+
+713
+00:47:29,893 --> 00:47:34,288
+And, another really cool thing we can do
+with this, is this concept of fooling image
+
+714
+00:47:34,288 --> 00:47:43,362
+So, what we can do is pick some arbitrary image, and then try to maximize
+the, so, say we take it picture of an elephant and then we tell the network
+
+715
+00:47:43,362 --> 00:47:49,418
+that we want to, change the image to
+maximize the score of Koala bear instead
+
+716
+00:47:49,418 --> 00:47:57,064
+So, then what we were doing is trying to change that image of an elephant
+to try and instead cause the network to classify as a Koala bear.
+
+717
+00:47:57,064 --> 00:48:05,931
+And, what you might hope for is that, maybe that elephant was sort of thought more thing
+into a Koala bear and maybe he would sprout little cute ears or something like that.
+
+718
+00:48:05,931 --> 00:48:09,241
+But, that's not what happens in practice,
+which is pretty surprising.
+
+719
+00:48:09,241 --> 00:48:17,377
+Instead if you take this picture of a elephant and tell them that, tell them that and
+try to change the elephant image to instead cause it to be classified as a koala bear
+
+720
+00:48:17,377 --> 00:48:24,853
+What you'll find is that, you is that this second image on the right
+actually is classified as koala bear but it looks the same to us.
+
+721
+00:48:24,853 --> 00:48:28,016
+So that's pretty fishy
+and pretty surprising.
+
+722
+00:48:28,016 --> 00:48:34,114
+So also on the bottom we've taken this picture
+of a boat. Schooner is the image in that class
+
+723
+00:48:34,114 --> 00:48:37,170
+and then we told the network
+to classified as an iPod.
+
+724
+00:48:37,170 --> 00:48:41,881
+So now the second example looks just, still looks
+like a boat to us but the network thinks it's an iPod
+
+725
+00:48:41,881 --> 00:48:46,260
+and the difference is in pixels between
+these two images are basically nothing.
+
+726
+00:48:46,260 --> 00:48:52,025
+And if you magnify those differences you don't really see
+any iPod or Koala like features on these differences,
+
+727
+00:48:52,025 --> 00:48:58,924
+they're just kind of like random patterns of noise. So the question
+is what's going here? And like how can this possibly the case?
+
+728
+00:48:58,924 --> 00:49:03,635
+Well, we'll have a guest lecture from Ian
+Goodfellow in a week an half two weeks.
+
+729
+00:49:03,635 --> 00:49:08,068
+And he's going to go in much more detail about this
+type of phenomenon and that will be really exciting.
+
+730
+00:49:08,068 --> 00:49:11,006
+But I did want to mention it here
+because it is on your homework.
+
+731
+00:49:11,006 --> 00:49:11,595
+Question?
+
+732
+00:49:16,320 --> 00:49:20,050
+Yeah, so that's something, so the question
+is can we use fooled images as training data
+
+733
+00:49:20,050 --> 00:49:27,214
+and I think, Ian's going to go in much more detail on all of these types of
+strategies. Because that's literally, that's really a whole lecture onto itself.
+
+734
+00:49:27,214 --> 00:49:28,885
+Question?
+
+735
+00:50:00,608 --> 00:50:03,478
+The question is why do we
+care about any of this stuff?
+
+736
+00:50:03,478 --> 00:50:08,685
+Basically... Okay, maybe that was a
+mischaracterization, I am sorry.
+
+737
+00:50:24,573 --> 00:50:32,027
+Yeah, the question is what is have in the... understanding this intermediate
+neurons how does that help our understanding of the final classification.
+
+738
+00:50:32,027 --> 00:50:38,921
+So this is actually, this whole field of trying to visualize intermediates
+is kind of in response to a common criticism of deep learning.
+
+739
+00:50:38,921 --> 00:50:43,011
+So a common criticism of deep learning is
+like, you've got this big black box network
+
+740
+00:50:43,011 --> 00:50:47,350
+you trained it on gradient ascent, you get a good
+number and that's great but we don't trust the network
+
+741
+00:50:47,350 --> 00:50:51,272
+because we don't understand as people why it's
+making the decisions, that's it's making.
+
+742
+00:50:51,272 --> 00:51:01,530
+So a lot of these type of visualization techniques were developed to try and address that and try to understand
+as people why the network are making their various classification, classification decisions a bit more.
+
+743
+00:51:01,530 --> 00:51:07,721
+Because if you contrast, if you contrast a deep convolutional
+neural network with other machine running techniques.
+
+744
+00:51:07,722 --> 00:51:10,493
+Like linear models are much
+easier to interpret in general
+
+745
+00:51:10,493 --> 00:51:17,457
+because you can look at the weights and kind of understand the interpretation between
+how much each input feature effect the decision or if you look at something like
+
+746
+00:51:17,458 --> 00:51:19,459
+a random forest or decision tree.
+
+747
+00:51:19,459 --> 00:51:27,442
+Some other machine learning models end up being a bit more interpretable just
+by their very nature then this sort of black box convolutional networks.
+
+748
+00:51:27,442 --> 00:51:33,520
+So a lot of this is sort of in response to that criticism
+to say that, yes they are these large complex models
+
+749
+00:51:33,520 --> 00:51:37,263
+but they are still doing some interesting
+and interpretable things under the hood.
+
+750
+00:51:37,263 --> 00:51:42,201
+They are not just totally going out in randomly
+classifying things. They are doing something meaningful
+
+751
+00:51:44,891 --> 00:51:50,989
+So another cool thing we can do with this gradient based
+optimization of images is this idea of DeepDream.
+
+752
+00:51:50,989 --> 00:51:55,592
+So this was a really cool blog post that
+came out from Google a year or two ago.
+
+753
+00:51:55,592 --> 00:52:00,859
+And the idea is that, this is, so we talked about
+scientific value, this is almost entirely for fun.
+
+754
+00:52:00,859 --> 00:52:04,284
+So the point of this exercise is mostly
+to generate cool images.
+
+755
+00:52:04,284 --> 00:52:10,186
+And aside, you also get some sense for what features
+images are looking at. Or these networks are looking at.
+
+756
+00:52:10,186 --> 00:52:15,275
+So we can do is, we take our input image we run it
+through the convolutional network up to some layer
+
+757
+00:52:15,275 --> 00:52:17,035
+and now we back propagate
+
+758
+00:52:17,035 --> 00:52:20,742
+and set the gradient of that, at that
+layer equal to the activation value.
+
+759
+00:52:20,742 --> 00:52:25,427
+And now back propagate, back to the image and
+update the image and repeat, repeat, repeat.
+
+760
+00:52:25,427 --> 00:52:31,682
+So this has the interpretation of trying to amplify existing
+features that were detected by the network in this image. Right?
+
+761
+00:52:31,682 --> 00:52:35,875
+Because whatever features existed on that layer
+now we set the gradient equal to the feature
+
+762
+00:52:35,875 --> 00:52:40,010
+and we just tell the network to amplify whatever
+features you already saw in that image.
+
+763
+00:52:40,010 --> 00:52:46,918
+And by the way you can also see this as trying to maximize
+the L2 norm of the features at that layer of the image.
+
+764
+00:52:46,918 --> 00:52:55,999
+And it turns... And when you do this the code ends up looking really simple. So your code for many of
+your homework assignments will probably be about this complex or maybe even a little bit a less so.
+
+765
+00:52:55,999 --> 00:53:00,785
+So the idea is that... But there's a couple of tricks
+here that you'll also see in your assignments.
+
+766
+00:53:00,785 --> 00:53:04,443
+So one trick is to jitter the image
+before you compute your gradients.
+
+767
+00:53:04,443 --> 00:53:11,187
+So rather than running the exact image through the network instead you'll shift
+the image over by two pixels and kind of wrap the other two pixels over here.
+
+768
+00:53:11,187 --> 00:53:19,540
+And this is a kind of regularizer to prevent each of these [mumbling] it regularizers
+a little bit to encourage a little bit of extra special smoothness in the image.
+
+769
+00:53:19,540 --> 00:53:26,653
+You also see they use L1 normalization of the gradients that's kind of
+a useful trick sometimes when doing this image generation problems.
+
+770
+00:53:26,653 --> 00:53:33,843
+You also see them clipping the pixel values once in a while. So again
+we talked about images actually should be between zero to 2.55
+
+771
+00:53:33,843 --> 00:53:39,335
+so this is a kind of projected gradients decent where
+we project on to the space of actual valid images.
+
+772
+00:53:39,335 --> 00:53:46,215
+But now when we do all this then we start, we might start with
+some image of a sky and then we get really cool results like this.
+
+773
+00:53:46,215 --> 00:53:52,614
+So you can see that now we've taken these tiny features on the
+sky and they get amplified through this, through this process.
+
+774
+00:53:52,614 --> 00:53:59,007
+And we can see things like this different mutant animals
+start to pop up or these kind of spiral shapes pop up.
+
+775
+00:53:59,007 --> 00:54:04,296
+Different kinds of houses and cars pop up. So
+that's all, that's all pretty interesting.
+
+776
+00:54:04,296 --> 00:54:08,743
+There's a couple patterns in particular that
+pop up all the time that people have named.
+
+777
+00:54:08,743 --> 00:54:12,133
+Right, so there's this Admiral
+dog, that shows up allot.
+
+778
+00:54:12,133 --> 00:54:16,033
+There's the pig snail, the camel bird
+this the dog fish.
+
+779
+00:54:16,033 --> 00:54:22,771
+Right, so these are kind of interesting, but actually this fact that
+dog show up so much in these visualization, actually does tell us
+
+780
+00:54:22,771 --> 00:54:26,249
+something about the data on
+which this network was trained.
+
+781
+00:54:26,249 --> 00:54:30,786
+Right, because this is a network that was trained for image
+net classification, image that have thousand categories.
+
+782
+00:54:30,786 --> 00:54:32,915
+But 200 of those categories are dogs.
+
+783
+00:54:32,915 --> 00:54:44,027
+So, so it's kind of not surprising in a sense that when you do these kind of visualizations then network
+ends up hallucinating a lot of dog like stuff in the image often morphed with other types of animals.
+
+784
+00:54:44,027 --> 00:54:47,327
+When you do this other layers of the
+network you get other types of results.
+
+785
+00:54:47,327 --> 00:54:52,708
+So here we're taking one of these lower layers in the network,
+the previous example was relatively high up in the network
+
+786
+00:54:52,708 --> 00:54:57,791
+and now again we have this interpretation that lower layers
+maybe computing edges and swirls and stuff like that
+
+787
+00:54:57,791 --> 00:55:01,766
+and that's kind of borne out when we
+running DeepDream at a lower layer.
+
+788
+00:55:01,766 --> 00:55:08,346
+Or if you run this thing for a long time and maybe add in some
+multiscale processing you can get some really, really crazy images.
+
+789
+00:55:08,346 --> 00:55:14,631
+Right, so here they're doing a kind of multiscale processing where they start
+with a small image run DeepDream on the small image then make it bigger
+
+790
+00:55:14,631 --> 00:55:19,893
+and continue DeepDream on the larger image and kind of
+repeat with this multiscale processing and then you can get,
+
+791
+00:55:19,893 --> 00:55:25,699
+and then maybe after you complete the final scale then you
+restart from the beginning and you just go wild on this thing.
+
+792
+00:55:25,699 --> 00:55:28,126
+And you can get some really crazy images.
+
+793
+00:55:28,126 --> 00:55:31,454
+So these examples were all from networks
+trained on image net
+
+794
+00:55:31,454 --> 00:55:35,216
+There's another data set from
+MIT called MIT Places Data set
+
+795
+00:55:35,216 --> 00:55:40,224
+but instead of 1,000 categories of objects
+instead it's 200 different types of scenes
+
+796
+00:55:40,224 --> 00:55:42,663
+like bedrooms and kitchens
+like stuff like that.
+
+797
+00:55:42,663 --> 00:55:50,868
+And now if we repeat this DeepDream procedure using an network trained
+at MIT places. We get some really cool visualization as well.
+
+798
+00:55:50,868 --> 00:55:59,491
+So now instead of dogs, slugs and admiral dogs and that's kind of stuff, instead
+we often get these kind of roof shapes of these kind of Japanese style building
+
+799
+00:55:59,491 --> 00:56:02,104
+or these different types of
+bridges or mountain ranges.
+
+800
+00:56:02,104 --> 00:56:05,288
+They're like really, really
+cool beautiful visualizations.
+
+801
+00:56:05,288 --> 00:56:11,685
+So the code for DeepDream is online, released by Google you
+can go check it out and make your own beautiful pictures
+
+802
+00:56:11,685 --> 00:56:14,535
+So there's another kind of...
+Sorry question?
+
+803
+00:56:24,731 --> 00:56:28,252
+So the question is, what
+are taking gradient of?
+
+804
+00:56:28,252 --> 00:56:33,318
+So like I say, if you, because like one over
+x squared on the gradient of that is x.
+
+805
+00:56:33,318 --> 00:56:44,477
+So, if you send back the volume of activation as the gradient, that's equivalent to max, that's
+equivalent to taking the gradient with respect to the like one over x squared some... Some of the values.
+
+806
+00:56:44,477 --> 00:56:49,665
+So it's equivalent to maximizing the norm
+of that of the features of that layer.
+
+807
+00:56:49,665 --> 00:56:56,511
+But in practice many implementation you'll see not
+explicitly compute that instead of send gradient back.
+
+808
+00:56:56,511 --> 00:57:01,478
+So another kind of useful, another kind of useful
+thing we can do is this concept of feature inversion.
+
+809
+00:57:01,478 --> 00:57:07,687
+So this again gives us a sense for what types of, what types of
+elements of the image are captured at different layers of the network.
+
+810
+00:57:07,687 --> 00:57:12,220
+So what we're going to do now is we're going to
+take an image, run that image through network
+
+811
+00:57:12,220 --> 00:57:15,832
+record the feature value
+for one of those images
+
+812
+00:57:15,832 --> 00:57:20,283
+and now we're going to try to reconstruct
+that image from its feature representation.
+
+813
+00:57:20,283 --> 00:57:31,074
+And the question, and now based on the how much, how much like what that reconstructed image looks like
+that'll give us some sense for what type of information about the image was captured in that feature vector.
+
+814
+00:57:31,074 --> 00:57:34,191
+So again, we can do this with gradient
+ascent with some regularizer.
+
+815
+00:57:34,191 --> 00:57:41,709
+Where now rather than maximizing some score instead we want
+to minimize the distance between this catch feature vector.
+
+816
+00:57:41,709 --> 00:57:50,014
+And between the computed features of our generated image. To try and again
+synthesize a new image that matches the feature back to that we computed before.
+
+817
+00:57:50,014 --> 00:57:56,856
+And another kind of regularizer that you frequently see here is the
+total variation regularizer that you also see on your homework.
+
+818
+00:57:56,856 --> 00:58:05,954
+So here with the total variation regularizer is panelizing differences between adjacent
+pixels on both of the left and adjacent in left and right and adjacent top to bottom.
+
+819
+00:58:05,954 --> 00:58:09,956
+To again try to encourage special
+smoothness in the generated image.
+
+820
+00:58:09,956 --> 00:58:16,369
+So now if we do this idea of feature inversion so this
+visualization here on the left we're showing some original image.
+
+821
+00:58:16,369 --> 00:58:18,294
+The elephants or the fruits at the left.
+
+822
+00:58:18,294 --> 00:58:22,458
+And then we run that,
+we run the image through a VGG-16 network.
+
+823
+00:58:22,458 --> 00:58:30,013
+Record the features of that network at some layer and then try to
+synthesize a new image that matches the recorded features of that layer.
+
+824
+00:58:30,013 --> 00:58:37,534
+And this is, this kind of give us a sense for what how much information
+is stored in this images. In these features of different layers.
+
+825
+00:58:37,534 --> 00:58:43,849
+So for example if we try to reconstruct the image based
+on the relu2_2 features from VGC's, from VGG-16.
+
+826
+00:58:43,849 --> 00:58:46,628
+We see that the image gets
+almost perfectly reconstructed.
+
+827
+00:58:46,628 --> 00:58:52,664
+Which means that we're not really throwing away much
+information about the raw pixel values at that layer.
+
+828
+00:58:52,664 --> 00:58:58,593
+But as we move up into the deeper parts of the network
+and try to reconstruct from relu4_3, relu5_1.
+
+829
+00:58:58,593 --> 00:59:05,488
+We see that our reconstructed image now, we've kind of kept the
+general space, the general spatial structure of the image.
+
+830
+00:59:05,488 --> 00:59:09,684
+You can still tell that, that it's a
+elephant or a banana or a, or an apple.
+
+831
+00:59:09,684 --> 00:59:16,427
+But a lot of the low level details aren't exactly what the pixel values
+were and exactly what the colors were, exactly what the textures were.
+
+832
+00:59:16,427 --> 00:59:20,923
+These are kind of low level details are kind of
+lost at these higher layers of this network.
+
+833
+00:59:20,923 --> 00:59:29,153
+So that gives us some sense that maybe as we move up through the flairs of the network
+it's kind of throwing away this low level information about the exact pixels of the image
+
+834
+00:59:29,153 --> 00:59:38,109
+and instead is maybe trying to keep around a little bit more semantic information, it's
+a little bit invariant for small changes in color and texture and things like that.
+
+835
+00:59:38,109 --> 00:59:42,835
+So we're building towards a style
+transfer here which is really cool.
+
+836
+00:59:42,835 --> 00:59:51,029
+So in addition to understand style transfer, So in texture synthesis, this is kind of an old problem
+in computer graphics. We also need to talk about a related problem called texture synthesis.
+
+837
+00:59:51,029 --> 00:59:55,112
+So in texture synthesis, this is kind
+of an old problem in computer graphics.
+
+838
+00:59:55,112 --> 01:00:05,792
+Here the idea is that we're given some input patch of texture. Something like these little scales
+here and now we want to build some model and then generate a larger piece of that same texture.
+
+839
+01:00:05,792 --> 01:00:12,056
+So for example, we might here want to generate a large
+image containing many scales that kind of look like input.
+
+840
+01:00:12,056 --> 01:00:15,986
+And this is again a pretty old
+problem in computer graphics.
+
+841
+01:00:15,986 --> 01:00:19,720
+There are nearest neighbor approaches to
+textual synthesis that work pretty well.
+
+842
+01:00:19,720 --> 01:00:21,659
+So, there's no neural networks here.
+
+843
+01:00:21,659 --> 01:00:27,792
+Instead, this kind of a simple algorithm where we march through
+the generated image one pixel at a time in scan line order.
+
+844
+01:00:27,792 --> 01:00:34,742
+And then copy... And then look at a neighborhood around the
+current pixel based on the pixels that we've already generated
+
+845
+01:00:34,742 --> 01:00:41,934
+and now compute a nearest neighbor of that neighborhood in the patches
+of the input image and then copy over one pixel from the input image.
+
+846
+01:00:41,934 --> 01:00:48,889
+So, maybe you don't need to understand the details here just the idea is that
+there's a lot classical algorithms for texture synthesis, it's a pretty old problem
+
+847
+01:00:48,889 --> 01:00:52,749
+but you can do this without
+neural networks basically.
+
+848
+01:00:52,749 --> 01:00:59,915
+And when you run this kind of this kind of classical texture synthesis
+algorithm it actually works reasonably well for simple textures.
+
+849
+01:00:59,915 --> 01:01:08,970
+But as we move to more complex textures these kinds of simple methods of
+maybe copying pixels from the input patch directly tend not to work so well.
+
+850
+01:01:08,970 --> 01:01:16,494
+So, in 2015, there was a really cool paper that tried to apply
+neural network features to this problem of texture synthesis.
+
+851
+01:01:16,494 --> 01:01:24,753
+And ended up framing it as kind of a gradient ascent procedure, kind of similar to
+the feature map, the various feature matching objectives that we've seen already.
+
+852
+01:01:24,753 --> 01:01:30,558
+So, in order to perform neural texture synthesis
+they use this concept of a gram matrix.
+
+853
+01:01:30,558 --> 01:01:36,372
+So, what we're going to do, is we're going to take our
+input texture and in this case some pictures of rocks
+
+854
+01:01:36,372 --> 01:01:44,347
+and then take that input texture and pass it through some convolutional neural
+network and pull out convolutional features at some layer of the network.
+
+855
+01:01:44,347 --> 01:01:53,596
+So, maybe then this convolutional feature volume that we've talked about,
+might be H by W by C or sorry, C by H by W at that layer of the network.
+
+856
+01:01:53,596 --> 01:01:56,515
+So, you can think of this
+as an H by W spacial grid.
+
+857
+01:01:56,515 --> 01:02:04,347
+And at each point of the grid, we have this C dimensional feature
+vector describing the rough appearance of that image at that point.
+
+858
+01:02:04,347 --> 01:02:10,179
+And now, we're going to use this activation map to
+compute a descriptor of the texture of this input image.
+
+859
+01:02:10,179 --> 01:02:15,294
+So, what we're going to do is take, pick out two of
+these different feature columns in the input volume.
+
+860
+01:02:15,294 --> 01:02:18,318
+Each of these feature columns
+will be a C dimensional vector.
+
+861
+01:02:18,318 --> 01:02:23,390
+And now take the outer product between those
+two vectors to give us a C by C matrix.
+
+862
+01:02:23,390 --> 01:02:30,333
+This C by C matrix now tells us something about the co-occurrence
+of the different features at those two points in the image.
+
+863
+01:02:30,333 --> 01:02:40,218
+Right, so, if an element, if like element IJ in the C by C matrix is large that means
+both elements I and J of those two input vectors were large and something like that.
+
+864
+01:02:40,218 --> 01:02:51,572
+So, this somehow captures some second order statistics about which features, in that feature map
+tend to activate to together at different spacial volumes... At different spacial positions.
+
+865
+01:02:51,572 --> 01:03:01,664
+And now we're going to repeat this procedure using all different pairs of feature vectors from all
+different points in this H by W grid. Average them all out, and that gives us our C by C gram matrix.
+
+866
+01:03:01,664 --> 01:03:06,323
+And this is then used a descriptor to describe
+kind of the texture of that input image.
+
+867
+01:03:06,323 --> 01:03:13,623
+So, what's interesting about this gram matrix is that it has now
+thrown away all spacial information that was in this feature volume.
+
+868
+01:03:13,623 --> 01:03:17,545
+Because we've averaged over all pairs of
+feature vectors at every point in the image.
+
+869
+01:03:17,545 --> 01:03:21,863
+Instead, it's just capturing the second order
+co-occurrence statistics between features.
+
+870
+01:03:21,863 --> 01:03:25,364
+And this ends up being a
+nice descriptor for texture.
+
+871
+01:03:25,364 --> 01:03:27,640
+And by the way, this is
+really efficient to compute.
+
+872
+01:03:27,640 --> 01:03:39,682
+So, if you have a C by H by W three dimensional tensure you can just reshape it to see times H by
+W and take that times its own transpose and compute this all in one shot so it's super efficient.
+
+873
+01:03:39,682 --> 01:03:45,417
+But you might be wondering why you don't use an actual covariance
+matrix or something like that instead of this funny gram matrix
+
+874
+01:03:45,417 --> 01:03:51,845
+and the answer is that using covariance... Using true covariance
+matrices also works but it's a little bit more expensive to compute.
+
+875
+01:03:51,845 --> 01:03:55,203
+So, in practice a lot of people
+just use this gram matrix descriptor.
+
+876
+01:03:55,203 --> 01:04:06,916
+So then... Then there's this... Now once we have this sort of neural descriptor of texture then we use a similar
+type of gradient ascent procedure to synthesize a new image that matches the texture of the original image.
+
+877
+01:04:06,916 --> 01:04:10,913
+So, now this looks kind of like the feature
+reconstruction that we saw a few slides ago.
+
+878
+01:04:10,913 --> 01:04:20,883
+But instead, I'm trying to reconstruct the whole feature map from the input image. Instead, we're
+just going to try and reconstruct this gram matrix texture descriptor of the input image instead.
+
+879
+01:04:20,883 --> 01:04:25,969
+So, in practice what this looks like is that well... You'll
+download some pretrained model, like in feature inversion.
+
+880
+01:04:25,969 --> 01:04:28,720
+Often, people will use
+the VGG networks for this.
+
+881
+01:04:28,720 --> 01:04:38,553
+You'll feed your... You'll take your texture image, feed it through the VGG
+network, compute the gram matrix and many different layers of this network.
+
+882
+01:04:38,553 --> 01:04:47,414
+Then you'll initialize your new image from some random initialization and then it
+looks like gradient ascent again. Just like for these other methods that we've seen.
+
+883
+01:04:47,414 --> 01:04:52,530
+So, you take that image, pass it through the same VGG
+network, Compute the gram matrix at various layers
+
+884
+01:04:52,530 --> 01:05:00,833
+and now compute loss as the L2 norm between the gram
+matrices of your input texture and your generated image.
+
+885
+01:05:00,833 --> 01:05:06,025
+And then you back prop, and compute pixel... A
+gradient of the pixels on your generated image.
+
+886
+01:05:06,025 --> 01:05:09,273
+And then make a gradient ascent step to
+update the pixels of the image a little bit.
+
+887
+01:05:09,273 --> 01:05:17,071
+And now, repeat this process many times, go forward, compute your gram
+matrices, compute your losses, back prop.. Gradient on the image and repeat.
+
+888
+01:05:17,071 --> 01:05:22,702
+And once you do this, eventually you'll end up generating
+a texture that matches your input texture quite nicely.
+
+889
+01:05:22,702 --> 01:05:30,022
+So, this was all from Nip's 2015 paper by a group in Germany.
+And they had some really cool results for texture synthesis.
+
+890
+01:05:30,022 --> 01:05:33,531
+So, here on the top, we're showing
+four different input textures.
+
+891
+01:05:33,531 --> 01:05:41,133
+And now, on the bottom, we're showing doing this
+texture synthesis approach by gram matrix matching.
+
+892
+01:05:41,133 --> 01:05:45,681
+Using, by computing the gram matrix at different
+layers at this pretrained convolutional network.
+
+893
+01:05:45,681 --> 01:05:56,965
+So, you can see that, if we use these very low layers in the convolutional network then we kind of match the general...
+We generally get splotches of the right colors but the overall spacial structure doesn't get preserved so much.
+
+894
+01:05:56,965 --> 01:06:06,935
+And now, as we move to large down further in the image and you compute these gram matrices
+at higher layers you see that they tend to reconstruct larger patterns from the input image.
+
+895
+01:06:06,935 --> 01:06:10,107
+For example, these whole rocks
+or these whole cranberries.
+
+896
+01:06:10,107 --> 01:06:17,677
+And now, this works pretty well that now we can synthesize these new
+images that kind of match the general spacial statistics of your inputs.
+
+897
+01:06:17,677 --> 01:06:21,445
+But they are quite different pixel wise
+from the actual input itself.
+
+898
+01:06:21,445 --> 01:06:22,528
+Question?
+
+899
+01:06:28,481 --> 01:06:30,847
+So, the question is, where
+do we compute the loss?
+
+900
+01:06:30,847 --> 01:06:40,285
+And in practice, we want to get good results typically people will compute gram matrices at many
+different layers and then the final loss will be a sum of all those potentially a weighted sum.
+
+901
+01:06:40,285 --> 01:06:47,940
+But I think for this visualization, to try to pin point the effect of the
+different layers I think these were doing reconstruction from just one layer.
+
+902
+01:06:47,940 --> 01:06:52,999
+So, now something really... Then, then they had a
+really brilliant idea kind of after this paper
+
+903
+01:06:52,999 --> 01:07:01,417
+which is, what if we do this texture synthesis approach but instead of using an
+image like rocks or cranberries what if we set it equal to a piece of artwork.
+
+904
+01:07:01,417 --> 01:07:03,748
+So then, for example, if you...
+
+905
+01:07:03,748 --> 01:07:10,333
+If you do the same texture synthesis algorithm by maximizing
+gram matrices, but instead of... But now we take, for example,
+
+906
+01:07:10,333 --> 01:07:14,656
+Vincent Van Gogh's Starry night
+or the Muse by Picasso as our texture...
+
+907
+01:07:14,656 --> 01:07:19,759
+As our input texture, and then run
+this same texture synthesis algorithm.
+
+908
+01:07:19,759 --> 01:07:25,683
+Then we can see our generated images tend to reconstruct
+interesting pieces from those pieces of artwork.
+
+909
+01:07:25,683 --> 01:07:34,616
+And now, something really interesting happens when you combine this idea of texture
+synthesis by gram matrix matching with feature inversion by feature matching.
+
+910
+01:07:34,616 --> 01:07:38,988
+And then this brings us to this really
+cool algorithm called style transfer.
+
+911
+01:07:38,988 --> 01:07:42,716
+So, in style transfer, we're
+going to take two images as input.
+
+912
+01:07:42,716 --> 01:07:49,813
+One, we're going to take a content image that will guide like what
+type of thing we want. What we generally want our output to look like.
+
+913
+01:07:49,813 --> 01:07:55,499
+Also, a style image that will tell us what is the general
+texture or style that we want our generated image to have
+
+914
+01:07:55,499 --> 01:08:02,596
+and then we will jointly do feature recon... We will generate a new image
+by minimizing the feature reconstruction loss of the content image
+
+915
+01:08:02,596 --> 01:08:05,661
+and the gram matrix
+loss of the style image.
+
+916
+01:08:05,661 --> 01:08:14,353
+And when we do these two things we a get a really cool image that kind of
+renders the content image kind of in the artistic style of the style image.
+
+917
+01:08:14,353 --> 01:08:18,317
+And now this is really cool. And you can
+get these really beautiful figures.
+
+918
+01:08:18,317 --> 01:08:26,384
+So again, what this kind of looks like is that you'll take your style image and your
+content image pass them into your network to compute your gram matrices and your features.
+
+919
+01:08:26,384 --> 01:08:29,332
+Now, you'll initialize your output image
+with some random noise.
+
+920
+01:08:29,332 --> 01:08:38,264
+Go forward, compute your losses go backward, compute your gradients on the image and repeat
+this process over and over doing gradient ascent on the pixels of your generated image.
+
+921
+01:08:38,265 --> 01:08:43,247
+And after a few hundred iterations,
+generally you'll get a beautiful image.
+
+922
+01:08:43,247 --> 01:08:48,965
+So, I have implementation of this online on my Gethub,
+that a lot of people are using. And it's really cool.
+
+923
+01:08:48,965 --> 01:08:54,609
+So, you can, this is kind of... Gives you a lot more
+control over the generated image as compared to DeepDream.
+
+924
+01:08:54,609 --> 01:09:00,544
+Right, so in DeepDream, you don't have a lot of control about exactly
+what types of things are going to happen coming out at the end.
+
+925
+01:09:00,544 --> 01:09:06,500
+You just kind of pick different layers of the networks maybe set
+different numbers of iterations and then dog slugs pop up everywhere.
+
+926
+01:09:06,500 --> 01:09:11,228
+But with style transfer, you get a lot more fine grain
+control over what you want the result to look like.
+
+927
+01:09:11,228 --> 01:09:19,099
+Right, by now, picking different style images with the same content image
+you can generate whole different types of results which is really cool.
+
+928
+01:09:19,099 --> 01:09:30,349
+Also, you can play around with the hyper parameters here. Right, because we're doing a joint reconstruct... We're minimizing
+this feature reconstruction loss of the content image. And this gram matrix reconstruction loss of the style image.
+
+929
+01:09:30,350 --> 01:09:39,468
+If you trade off the constant, the waiting between those two terms and the loss. Then you can get
+control about how much we want to match the content versus how much we want to match the style.
+
+930
+01:09:39,469 --> 01:09:41,647
+There's a lot of other hyper
+parameters you can play with.
+
+931
+01:09:41,647 --> 01:09:45,707
+For example, if you resize the style image
+before you compute the gram matrix
+
+932
+01:09:45,707 --> 01:09:52,344
+that can give you some control over what the scale of features
+are that you want to reconstruct from the style image.
+
+933
+01:09:52,344 --> 01:09:58,976
+So, you can see that here, we've done this same reconstruction the only
+difference is how big was the style image before we computed the gram matrix.
+
+934
+01:09:58,976 --> 01:10:04,263
+And this gives you another axis over
+which you can control these things.
+
+935
+01:10:04,263 --> 01:10:07,670
+You can also actually do style transfer
+with multiple style images
+
+936
+01:10:07,670 --> 01:10:13,431
+if you just match sort of multiple gram matrices at
+the same time. And that's kind of a cool result.
+
+937
+01:10:13,431 --> 01:10:25,105
+We also saw this multi-scale process... So, another cool thing you can do. We talked about this multi-scale processing
+for DeepDream and saw how multi scale processing in DeepDream can give you some really cool resolution results.
+
+938
+01:10:25,105 --> 01:10:29,330
+And you can do a similar type of multi-scale
+processing in style transfer as well.
+
+939
+01:10:29,330 --> 01:10:40,867
+So, then we can compute images like this. That a super high resolution, this is I
+think a 4k image of our favorite school, like rendered in the style of Starry night.
+
+940
+01:10:40,867 --> 01:10:42,652
+But this is actually super
+expensive to compute.
+
+941
+01:10:42,652 --> 01:10:47,074
+I think this one took four GPU's.
+So, a little expensive.
+
+942
+01:10:47,074 --> 01:10:53,666
+We can also other style, other style images. And get some really
+cool results from the same content image. Again, at high resolution.
+
+943
+01:10:53,666 --> 01:11:01,168
+Another fun thing you can do is you know, you can actually
+do joint style transfer and DeepDream at the same time.
+
+944
+01:11:01,168 --> 01:11:09,017
+So, now we'll have three losses, the content loss the style loss and
+this... And this DeepDream loss that tries to maximize the norm.
+
+945
+01:11:09,017 --> 01:11:14,286
+And get something like this. So, now it's Van
+Gogh with the dog slug's coming out everywhere.
+
+946
+01:11:14,286 --> 01:11:15,858
+[laughing]
+
+947
+01:11:15,858 --> 01:11:18,466
+So, that's really cool.
+
+948
+01:11:18,466 --> 01:11:23,012
+But there's kind of a problem with this style transfer
+for algorithms which is that they are pretty slow.
+
+949
+01:11:23,012 --> 01:11:30,164
+Right, you need to produce... You need to compute a lot of forward and backward
+passes through your pretrained network in order to complete these images.
+
+950
+01:11:30,164 --> 01:11:38,200
+And especially for these high resolution results that we saw in the previous slide. Each
+forward and backward pass of a 4k image is going to take a lot of compute and a lot of memory.
+
+951
+01:11:38,200 --> 01:11:46,340
+And if you need to do several hundred of those iterations generating these
+images could take many, like tons of minutes even on a powerful GPU.
+
+952
+01:11:46,340 --> 01:11:50,320
+So, it's really not so practical
+to apply these things in practice.
+
+953
+01:11:50,320 --> 01:11:54,874
+The solution is to now, train another neural
+network to do the style transfer for us.
+
+954
+01:11:54,874 --> 01:12:03,164
+So, I had a paper about this last year and the idea is that we're going to fix
+some style that we care about at the beginning. In this case, Starry night.
+
+955
+01:12:03,164 --> 01:12:08,034
+And now rather than running a separate optimization
+procedure for each image that we want to synthesize
+
+956
+01:12:08,034 --> 01:12:15,748
+instead we're going to train a single feed forward network that can
+input the content image and then directly output the stylized result.
+
+957
+01:12:15,748 --> 01:12:26,848
+And now the way that we train this network is that we compute the same content and style losses during training
+of our feed forward network and use that same gradient to update the weights of the feed forward network.
+
+958
+01:12:26,848 --> 01:12:36,148
+And now this thing takes maybe a few hours to train but once it's trained, then in order to
+produce stylized images you just need to do a single forward pass through the trained network.
+
+959
+01:12:36,148 --> 01:12:49,880
+So, I have a code for this online and you can see that it ends up looking about... Relatively comparable quality in
+some cases to this very slow optimization base method but now it runs in real time it's about a thousand times faster.
+
+960
+01:12:49,880 --> 01:12:54,990
+So, here you can see, this is like a
+demo of it running live off my webcam.
+
+961
+01:12:54,990 --> 01:13:05,476
+So, this is not running live right now obviously, but if you have a big GPU you can easily
+run four different styles in real time all simultaneously because it's so efficient.
+
+962
+01:13:05,476 --> 01:13:12,650
+There was... There was another group from Russia that had a very similar out...
+That had a very similar paper concurrently and their results are about as good.
+
+963
+01:13:12,650 --> 01:13:15,392
+They also had this kind
+of tweek on the algorithm.
+
+964
+01:13:15,392 --> 01:13:25,450
+So, this feed forward network that we're training ends up looking a lot like
+these... These segmentation models that we saw. So, these segmentation networks,
+
+965
+01:13:25,450 --> 01:13:37,678
+for semantic segmentation we're doing down sampling and then many, and then many layers then some up
+sampling [mumbling] With transposed convulsion in order to down sample an up sample to be more efficient.
+
+966
+01:13:37,678 --> 01:13:45,244
+The only difference is that this final layer produces a
+three channel output for the RGB of that final image.
+
+967
+01:13:45,244 --> 01:13:48,540
+And inside this network, we have batch
+normalization in the various layers.
+
+968
+01:13:48,540 --> 01:13:56,027
+But in this paper, they introduce... They swap out the batch normalization for
+something else called instance normalization tends to give you much better results.
+
+969
+01:13:56,027 --> 01:14:05,500
+So, one drawback of these types of methods is that we're now training one
+new style transfer network... For every... For style that we want to apply.
+
+970
+01:14:05,500 --> 01:14:10,433
+So that could be expensive if now you need to
+keep a lot of different trained networks around.
+
+971
+01:14:10,433 --> 01:14:21,178
+So, there was a paper from Google that just came... Pretty recently that addressed this by
+using one feed forward trained network to apply many different styles to the input image.
+
+972
+01:14:21,178 --> 01:14:28,034
+So now, they can train one network to apply many
+different styles at test time using one trained network.
+
+973
+01:14:28,034 --> 01:14:36,477
+So, here's it's going to take the content images input as well as the identity of the style
+you want to apply and then this is using one network to apply many different types of styles.
+
+974
+01:14:36,477 --> 01:14:39,365
+And again, runs in real time.
+
+975
+01:14:39,365 --> 01:14:44,442
+That same algorithm can also do this kind of style
+blending in real time with one trained network.
+
+976
+01:14:44,442 --> 01:14:52,458
+So now, once you trained this network on these four different styles you can actually
+specify a blend of these styles to be applied at test time which is really cool.
+
+977
+01:14:52,458 --> 01:15:01,976
+So, these kinds of real time style transfer methods are on various
+apps and you can see these out in practice a lot now these days.
+
+978
+01:15:01,976 --> 01:15:04,071
+So, kind of the summary
+of what we've seen today
+
+979
+01:15:04,071 --> 01:15:08,113
+is that we've talked about many different
+methods for understanding CNN representations.
+
+980
+01:15:08,113 --> 01:15:10,190
+We've talked about some of
+these activation based methods
+
+981
+01:15:10,190 --> 01:15:14,220
+like nearest neighbor, dimensionality
+reduction, maximal patches, occlusion images
+
+982
+01:15:14,220 --> 01:15:18,316
+to try to understand based on the activation
+values of what the features are looking for.
+
+983
+01:15:18,316 --> 01:15:20,461
+We also talked about a bunch
+of gradient based methods
+
+984
+01:15:20,461 --> 01:15:27,127
+where you can use gradients to synthesize new images
+to understand your features such as saliency maps
+
+985
+01:15:27,127 --> 01:15:30,417
+class visualizations, fooling images,
+feature inversion.
+
+986
+01:15:30,417 --> 01:15:37,997
+And we also had fun by seeing how a lot of these similar ideas can be applied
+to things like Style Transfer and DeepDream to generate really cool images.
+
+987
+01:15:37,997 --> 01:15:40,397
+So, next time, we'll talk
+about unsupervised learning
+
+988
+01:15:40,397 --> 01:15:45,834
+Autoencoders, Variational Autoencoders and generative
+adversarial networks so that should be a fun lecture.
